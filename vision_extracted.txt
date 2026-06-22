@@ -1,0 +1,284 @@
+CreatorPilot AI
+An AI Content Operating System for Creators — Student Build, Zero-Cost Stack
+
+Project Type: Student portfolio project, built for LinkedIn + personal content creation
+Budget: $0 — built entirely on free tiers and open-source tools
+Goal: Ship a working MVP, document the build publicly, and use it to create content about building in public
+Document version 2.0
+
+Table of Contents
+TOC \h \o &quot;1-2&quot;
+
+
+Vision
+CreatorPilot AI is an AI-powered content operating system that turns one long-form video into a full set of platform-ready, short-form assets — automatically.
+Upload a video once. Get back Shorts, Reels, clips, captions, titles, hashtags, and basic analytics, ready to publish.
+Why Build This as a Student Project
+Real product, real constraints: shows you can scope, build, and ship something end-to-end, not just follow a tutorial.
+Built-in content engine: every feature you build is also a LinkedIn post — &quot;day 4 of building an AI tool that repurposes video&quot; type content.
+Zero cost: every tool in this stack has a generous free tier, so this is fundable on a student budget.
+Dual purpose: it&apos;s both the project you ship AND the subject you post about — the build documents itself.
+Problem Statement
+Creators spend most of their time on repetitive, mechanical work instead of creating:
+Editing long videos down into short clips
+Manually finding the 30–60 second &quot;viral&quot; moment in a 40-minute video
+Reformatting horizontal video into vertical 9:16 for Shorts/Reels/TikTok
+Writing captions, titles, and hashtags for each platform separately
+Publishing the same content across 4–5 different platforms
+Tracking what actually performed well
+Most creators would rather spend that time creating new content than repackaging old content.
+Target Users
+Primary Users
+YouTubers and streamers
+Podcasters
+Coaches and educators
+Agency owners and personal brands
+Secondary Users
+Marketing agencies
+Social media managers
+Content teams
+For a student build, narrow this further: target student creators, micro-coaches, or podcast hosts with under 10K followers — easier to get free user feedback from.
+Core Value Proposition
+Upload one long-form video, automatically generate:
+YouTube Shorts
+Instagram Reels
+TikTok videos
+X (Twitter) posts
+LinkedIn posts
+Blog content
+All from a single source video — no manual re-editing per platform.
+Zero-Cost Build Stack
+This is the core change from the original plan: every paid/managed service is replaced with a free-tier or open-source equivalent. The architecture stays the same — only the implementation changes.
+Layer
+Free Tool
+Why It Works for a Student Build
+Frontend
+Next.js + TailwindCSS, hosted on Vercel (free tier)
+Unlimited personal projects, generous bandwidth, instant deploys
+Backend
+FastAPI (Python), hosted on Render or Railway free tier
+750 free compute hours/month, easy to redeploy
+Database
+Supabase (Postgres) free tier
+500MB DB, built-in auth, generous enough for an MVP
+File storage
+Supabase Storage or Cloudflare R2 free tier
+1GB+ free storage, no egress fees on R2
+Auth
+Supabase Auth or Clerk free tier
+Email/password + OAuth out of the box, no backend code needed
+Queue / jobs
+Upstash Redis free tier + simple Python worker
+Serverless Redis, free up to 10K commands/day
+Transcription
+OpenAI Whisper (open-source, run locally) or faster-whisper
+Run free on your own machine/Colab GPU, no API cost
+LLM (captions, titles, tags)
+Groq free tier (Llama 3.1) or local Ollama (Llama 3)
+Fast, free inference; Ollama runs fully offline
+Video processing
+FFmpeg (open-source)
+Industry-standard, free, does all clipping/cropping/subtitling
+Subtitle burn-in
+FFmpeg + Whisper timestamps
+No paid captioning tool needed
+Hosting/compute for video jobs
+Google Colab (free GPU) for batch processing
+Free GPU hours for the heavy transcription/clip-detection work
+Publishing
+Native platform APIs (YouTube Data API free quota)
+Start with one platform&apos;s free API tier; expand later
+Free tiers have limits (storage caps, compute hours, rate limits). For a portfolio project this is a feature, not a bug — it forces good scoping and gives you something real to write about (&quot;how I worked around free-tier limits&quot;).
+MVP Features
+1. Authentication
+Users can:
+Register
+Log in
+Reset password
+Manage their profile
+Build with: Supabase Auth (free) — handles all of the above with a few lines of code, no need to build it from scratch.
+2. Video Upload
+Users can:
+Upload MP4 files
+Upload MOV files
+Paste a YouTube URL
+The system stores files securely.
+Build with: Supabase Storage (free tier) for uploads; yt-dlp (open-source) to pull video from a pasted YouTube URL.
+3. AI Transcription
+The system automatically:
+Extracts audio from the video
+Generates a transcript
+Detects the spoken language
+Stores word/segment timestamps
+Output: transcript text, timestamp metadata, and speaker segments.
+Build with: faster-whisper (open-source, free) run on Google Colab&apos;s free GPU tier or locally on CPU for short clips.
+4. Viral Clip Detection
+The system analyzes the transcript and identifies:
+Hooks
+Emotional moments
+Educational moments
+High-retention segments
+Storytelling segments
+Output: a ranked clip list with a viral score and start/end timestamps.
+Build with: a free LLM (Groq&apos;s Llama 3.1 free tier, or local Ollama) prompted to score transcript segments — no need for a custom-trained model for the MVP.
+5. Auto Clip Generation
+The system automatically:
+Cuts clips at the identified timestamps
+Converts to 9:16 vertical format
+Centers the speaker in frame
+Adds burned-in subtitles
+Exports HD video
+Output: ready-to-publish short-form video files.
+Build with: FFmpeg (free, open-source) for cropping, reframing, and subtitle burn-in. OpenCV (free) can assist with basic face-centering.
+6. Caption Generator
+Generates platform-specific captions for YouTube, Instagram, TikTok, and LinkedIn.
+Build with: free-tier LLM (Groq/Ollama) with a different prompt template per platform.
+7. Title Generator
+Generates viral titles, SEO titles, educational titles, and curiosity-based titles.
+Build with: same free LLM, multiple prompt styles run in parallel.
+8. Hashtag Generator
+Generates relevant hashtags using topic analysis, platform optimization, and trend matching.
+Build with: free LLM for topic extraction; a static, manually curated trending-hashtag list per platform (refresh weekly) to avoid needing a paid trends API.
+9. Publishing
+Phase 1: YouTube (via the YouTube Data API free quota).
+Phase 2: Instagram, TikTok, LinkedIn, and X — added once Phase 1 is stable and free-tier API access is confirmed for each platform.
+Many platform APIs require app review for posting permissions — budget time for this, not money.
+User Workflow
+User uploads a video or pastes a YouTube link
+Video is stored in free-tier storage
+Transcription is generated
+AI analyzes the transcript
+Clips are identified and ranked
+Short-form clips are generated
+Captions are generated per platform
+Titles are generated
+User reviews the output
+User publishes or downloads the content
+Admin Dashboard
+The admin (you) can:
+View registered users
+View uploaded videos
+Monitor processing jobs
+Manage subscriptions (or, for a free MVP, manage usage limits instead of billing)
+View basic system metrics
+For a portfolio build, this can be a simple internal page rather than a polished product — Supabase&apos;s own table editor can double as a lightweight admin view early on.
+Technical Stack (Free-Tier Version)
+Frontend
+Next.js
+TypeScript
+TailwindCSS
+Hosted free on Vercel
+Backend
+FastAPI (Python)
+Hosted free on Render or Railway
+Database
+PostgreSQL via Supabase free tier
+Storage
+Supabase Storage or Cloudflare R2 free tier (replaces AWS S3)
+Queue
+Upstash Redis free tier (replaces self-hosted Redis)
+Workers
+Celery, or a simpler free alternative: Python background tasks via FastAPI&apos;s BackgroundTasks for MVP scale
+AI
+Whisper / faster-whisper for transcription
+Llama 3.1 via Groq free tier, or Ollama running locally, for text generation
+Video Processing
+FFmpeg
+OpenCV
+Hosting
+Vercel (frontend) + Render/Railway (backend) + Supabase (DB/storage), all free tier
+This stack can run a working MVP at $0/month. The main limits you&apos;ll hit are compute time and storage caps — both are worth mentioning in interviews and LinkedIn posts as engineering trade-offs you navigated.
+Team Roles &amp; Task Distribution
+A 5-person split, organized by skill cluster rather than by feature, so each person owns a clear lane end-to-end and can speak to it independently in interviews or on LinkedIn.
+Member
+Role
+Owns
+Palak
+Frontend &amp; UX Lead
+Next.js app, upload flow, review/edit screens, auth UI, dashboard UI
+Anish
+Backend &amp; Infrastructure Lead
+FastAPI backend, database schema, storage, queue/worker setup, deployment
+Aastha
+AI &amp; Transcription Lead
+Whisper transcription pipeline, LLM prompts for clip detection, captions, titles, hashtags
+Alok
+Video Processing Lead
+FFmpeg/OpenCV pipeline: clipping, 9:16 reframing, subtitle burn-in, export
+Farzan
+Publishing, QA &amp; Content Lead
+Platform publishing integration, end-to-end testing, build-in-public content on LinkedIn
+Palak — Frontend &amp; UX
+Auth screens: register, login, password reset, profile management (Supabase Auth UI)
+Upload flow: drag-and-drop MP4/MOV upload, YouTube URL paste field, upload progress state
+Review screen: shows generated clips, captions, titles, hashtags for user approval/edits
+Dashboard: lists past uploads, processing status, basic analytics view
+Styling: TailwindCSS design system, mobile-responsive layout
+Anish — Backend &amp; Infrastructure
+API layer: FastAPI routes for upload, job status, clip retrieval, publishing triggers
+Database: Postgres schema (users, videos, transcripts, clips, jobs) on Supabase
+Storage: Supabase Storage/Cloudflare R2 integration for video files and exported clips
+Job queue: Upstash Redis + background worker logic so transcription/clipping run async
+Deployment: Vercel (frontend) and Render/Railway (backend) CI/CD setup
+Aastha — AI &amp; Transcription
+Transcription pipeline: faster-whisper integration, language detection, timestamp/speaker segment storage
+Clip detection: prompt design for the free LLM (Groq Llama 3.1 / Ollama) to score and rank transcript segments
+Caption generator: platform-specific prompt templates (YouTube, Instagram, TikTok, LinkedIn)
+Title generator: viral, SEO, educational, and curiosity-based title prompt variants
+Hashtag generator: topic extraction plus a maintained list of platform trending tags
+Alok — Video Processing
+Clip cutting: FFmpeg scripts to cut clips at AI-identified timestamps
+Reframing: convert horizontal video to 9:16, center the speaker (OpenCV-assisted)
+Subtitles: burn in subtitles from Whisper timestamps
+Export: HD export settings, file size/quality tuning for each platform
+Performance: keep processing time reasonable on free-tier compute (Colab GPU batching)
+Farzan — Publishing, QA &amp; Content
+Publishing integration: YouTube Data API for Phase 1; research and scope Instagram/TikTok/LinkedIn/X APIs for Phase 2
+End-to-end QA: test the full upload-to-publish workflow, log and triage bugs across all four lanes
+Admin dashboard: lightweight internal view of users, uploads, and job status
+Content creation: turn the build process into LinkedIn posts/demo clips using CreatorPilot AI itself
+Roles overlap by design — Anish and Aastha will coordinate closely on the worker/job pipeline, and Alok&apos;s video output feeds directly into what Palak displays on the review screen. Plan a short weekly sync to keep these handoffs smooth.
+Suggested Build Order
+Week 1–2: Anish sets up backend, DB, and storage skeleton; Palak builds auth and upload UI against it
+Week 3–4: Aastha builds transcription + clip detection; Alok starts FFmpeg clipping in parallel using sample timestamps
+Week 5–6: Connect the pipeline end-to-end (upload → transcript → clips → captions/titles); Palak builds the review screen
+Week 7: Farzan integrates YouTube publishing and runs full QA passes
+Week 8: Polish, fix bugs found in QA, and start build-in-public content push for launch
+Success Metrics
+Milestone
+Target
+Month 1
+10–20 active creators (realistic for a free student-run beta)
+Month 3
+100 uploaded videos
+Month 6
+First public case study / portfolio writeup, regardless of paid conversions
+KPIs to Track
+Clips generated
+Videos processed
+Posts published
+User retention (do they come back to upload a second video?)
+LinkedIn/content engagement generated from documenting the build
+As a student project, treat &quot;paying customers&quot; as optional — the more valuable metric is a working demo, a public build log, and genuine user feedback from a handful of real creators.
+Future Roadmap
+V2
+AI content calendar
+Competitor analysis
+Thumbnail generator
+Auto-scheduling
+Team workspaces
+V3
+AI creator agent
+Viral prediction engine
+Automated content strategy
+Multi-language translation
+Voice cloning
+Using This Project for Content Creation
+Because this project is both a product and a process, it doubles as an ongoing content series. A simple framework:
+Build-in-public posts: short LinkedIn updates each time a feature ships (&quot;Today I got Whisper transcribing a 40-minute podcast for free using Colab&apos;s GPU&quot;).
+Problem-first posts: explain the creator pain point before showing the feature that solves it.
+Stack breakdown posts: &quot;How I&apos;m building an AI SaaS for $0/month&quot; — a natural, high-interest post format.
+Demo clips: since the product itself generates short-form clips, use CreatorPilot AI to generate the Reels/Shorts about CreatorPilot AI.
+Lessons-learned posts: free-tier limits, API rejections, and bugs make better content than a frictionless build — be specific about what broke and how it was fixed.
+Product Goal
+Become a working, free-to-build example of an all-in-one AI content operating system — one that turns a single piece of content into dozens of platform-ready assets with minimal manual work, and that doubles as a public proof-of-skill project for a LinkedIn portfolio.

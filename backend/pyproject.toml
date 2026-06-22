@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "creatorpilot-ai-backend"
+version = "0.1.0"
+description = "FastAPI backend for CreatorPilot AI"
+authors = ["Anish <anash@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.111.1"
+"uvicorn[standard]" = "^0.23.2"
+python-multipart = "^0.0.6"
+python-dotenv = "^1.0.0"
+httpx = "^0.26.0"
+sqlalchemy = "^2.0.31"
+yt-dlp = "^2024.8.6"
+opencv-python-headless = "^4.10.0.84"
+numpy = "^1.26.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^8.4.2"
+httpx = "^0.26.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

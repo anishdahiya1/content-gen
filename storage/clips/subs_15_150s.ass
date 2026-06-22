@@ -1,0 +1,43 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,65,&H00FFFFFF,&H0000FFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,1,2,10,10,240,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:01.09,Default,,0,0,0,,{\c&H0000FFFF&}I{\c} remember staying
+Dialogue: 0,0:00:01.09,0:00:02.19,Default,,0,0,0,,I {\c&H0000FFFF&}remember{\c} staying
+Dialogue: 0,0:00:02.19,0:00:03.28,Default,,0,0,0,,I remember {\c&H0000FFFF&}staying{\c}
+Dialogue: 0,0:00:03.28,0:00:04.38,Default,,0,0,0,,{\c&H0000FFFF&}up{\c} until 4
+Dialogue: 0,0:00:04.38,0:00:05.47,Default,,0,0,0,,up {\c&H0000FFFF&}until{\c} 4
+Dialogue: 0,0:00:05.47,0:00:06.56,Default,,0,0,0,,up until {\c&H0000FFFF&}4{\c}
+Dialogue: 0,0:00:06.56,0:00:07.66,Default,,0,0,0,,{\c&H0000FFFF&}AM{\c} trying to
+Dialogue: 0,0:00:07.66,0:00:08.75,Default,,0,0,0,,AM {\c&H0000FFFF&}trying{\c} to
+Dialogue: 0,0:00:08.75,0:00:09.84,Default,,0,0,0,,AM trying {\c&H0000FFFF&}to{\c}
+Dialogue: 0,0:00:09.84,0:00:10.94,Default,,0,0,0,,{\c&H0000FFFF&}fix{\c} an FFmpeg
+Dialogue: 0,0:00:10.94,0:00:12.03,Default,,0,0,0,,fix {\c&H0000FFFF&}an{\c} FFmpeg
+Dialogue: 0,0:00:12.03,0:00:13.12,Default,,0,0,0,,fix an {\c&H0000FFFF&}FFmpeg{\c}
+Dialogue: 0,0:00:13.12,0:00:14.22,Default,,0,0,0,,{\c&H0000FFFF&}alignment{\c} issue I
+Dialogue: 0,0:00:14.22,0:00:15.31,Default,,0,0,0,,alignment {\c&H0000FFFF&}issue{\c} I
+Dialogue: 0,0:00:15.31,0:00:16.41,Default,,0,0,0,,alignment issue {\c&H0000FFFF&}I{\c}
+Dialogue: 0,0:00:16.41,0:00:17.50,Default,,0,0,0,,{\c&H0000FFFF&}almost{\c} gave up
+Dialogue: 0,0:00:17.50,0:00:18.59,Default,,0,0,0,,almost {\c&H0000FFFF&}gave{\c} up
+Dialogue: 0,0:00:18.59,0:00:19.69,Default,,0,0,0,,almost gave {\c&H0000FFFF&}up{\c}
+Dialogue: 0,0:00:19.69,0:00:20.78,Default,,0,0,0,,{\c&H0000FFFF&}But{\c} then it
+Dialogue: 0,0:00:20.78,0:00:21.88,Default,,0,0,0,,But {\c&H0000FFFF&}then{\c} it
+Dialogue: 0,0:00:21.88,0:00:22.97,Default,,0,0,0,,But then {\c&H0000FFFF&}it{\c}
+Dialogue: 0,0:00:22.97,0:00:24.06,Default,,0,0,0,,{\c&H0000FFFF&}clickeddynamic{\c} reframing with
+Dialogue: 0,0:00:24.06,0:00:25.16,Default,,0,0,0,,clickeddynamic {\c&H0000FFFF&}reframing{\c} with
+Dialogue: 0,0:00:25.16,0:00:26.25,Default,,0,0,0,,clickeddynamic reframing {\c&H0000FFFF&}with{\c}
+Dialogue: 0,0:00:26.25,0:00:27.34,Default,,0,0,0,,{\c&H0000FFFF&}face{\c} tracking actually
+Dialogue: 0,0:00:27.34,0:00:28.44,Default,,0,0,0,,face {\c&H0000FFFF&}tracking{\c} actually
+Dialogue: 0,0:00:28.44,0:00:29.53,Default,,0,0,0,,face tracking {\c&H0000FFFF&}actually{\c}
+Dialogue: 0,0:00:29.53,0:00:30.62,Default,,0,0,0,,{\c&H0000FFFF&}worked{\c} And that
+Dialogue: 0,0:00:30.62,0:00:31.72,Default,,0,0,0,,worked {\c&H0000FFFF&}And{\c} that
+Dialogue: 0,0:00:31.72,0:00:32.81,Default,,0,0,0,,worked And {\c&H0000FFFF&}that{\c}
+Dialogue: 0,0:00:32.81,0:00:33.91,Default,,0,0,0,,{\c&H0000FFFF&}felt{\c} amazing
+Dialogue: 0,0:00:33.91,0:00:35.00,Default,,0,0,0,,felt {\c&H0000FFFF&}amazing{\c}
