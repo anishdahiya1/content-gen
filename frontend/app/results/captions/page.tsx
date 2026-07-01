@@ -76,15 +76,15 @@ export default function CaptionsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
+    <main className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8 animate-fade-in">
-          <Link href="/" className="text-cyan-400 hover:text-cyan-300 mb-6 inline-block">
+          <Link href="/" className="text-[var(--foreground)] hover:text-zinc-300 mb-6 inline-block">
             ← Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-2">✍️ Captions & Titles</h1>
-          <p className="text-slate-400">Platform-specific copy optimized for engagement</p>
+          <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">✍️ Captions & Titles</h1>
+          <p className="text-[var(--foreground)]">Platform-specific copy optimized for engagement</p>
         </div>
 
         {/* Status Message */}
@@ -97,7 +97,7 @@ export default function CaptionsPage() {
         {/* Generate Button */}
         {Object.keys(captions).length === 0 && !loading && (
           <div className="card mb-8 text-center py-8">
-            <p className="text-slate-300 mb-4">Generate platform-optimized captions and titles</p>
+            <p className="text-zinc-300 mb-4">Generate platform-optimized captions and titles</p>
             <button
               onClick={handleGenerateCaptions}
               className="btn-primary px-8 py-3 text-lg"
@@ -111,7 +111,7 @@ export default function CaptionsPage() {
         {loading && (
           <div className="card mb-6 text-center py-8 animate-pulse">
             <div className="text-4xl mb-2">⏳</div>
-            <p className="text-slate-300">Generating captions and titles...</p>
+            <p className="text-zinc-300">Generating captions and titles...</p>
           </div>
         )}
 
@@ -125,8 +125,8 @@ export default function CaptionsPage() {
                   onClick={() => setSelectedPlatform(p)}
                   className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                     selectedPlatform === p
-                      ? 'btn-primary bg-cyan-600'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      ? 'btn-primary bg-white'
+                      : 'bg-zinc-700 text-zinc-300 hover:bg-white'
                   }`}
                 >
                   {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -137,20 +137,20 @@ export default function CaptionsPage() {
             {/* Captions Section */}
             <div className="space-y-4 mb-8">
               <div className="card">
-                <h3 className="text-lg font-semibold text-cyan-400 mb-4">📝 Captions</h3>
+                <h3 className="text-lg font-semibold text-[var(--foreground)] mb-4">📝 Captions</h3>
                 <div className="space-y-3">
                   {captions[selectedPlatform]?.map((caption: any, i: number) => (
                     <div key={i} className="card-hover p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-cyan-400 capitalize">{caption.style}</span>
+                        <span className="text-sm font-semibold text-[var(--foreground)] capitalize">{caption.style}</span>
                         <button 
                           onClick={() => copyToClipboard(caption.text)}
-                          className="text-xs bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded text-white transition-colors"
+                          className="text-xs bg-white hover:bg-cyan-700 px-3 py-1 rounded text-[var(--foreground)] transition-colors"
                         >
                           📋 Copy
                         </button>
                       </div>
-                      <div className="bg-slate-700/50 rounded p-4 text-slate-100 whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                      <div className="bg-zinc-700/50 rounded p-4 text-zinc-100 whitespace-pre-wrap font-mono text-sm leading-relaxed">
                         {caption.text}
                       </div>
                     </div>
@@ -161,20 +161,20 @@ export default function CaptionsPage() {
 
             {/* Titles Section */}
             <div className="card">
-              <h3 className="text-lg font-semibold text-cyan-400 mb-4">🎯 Titles</h3>
+              <h3 className="text-lg font-semibold text-[var(--foreground)] mb-4">🎯 Titles</h3>
               <div className="space-y-3">
                 {titles[selectedPlatform]?.map((title: any, i: number) => (
                   <div key={i} className="card-hover p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-cyan-400 capitalize">{title.style}</span>
+                      <span className="text-sm font-semibold text-[var(--foreground)] capitalize">{title.style}</span>
                       <button 
                         onClick={() => copyToClipboard(title.text)}
-                        className="text-xs bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded text-white transition-colors"
+                        className="text-xs bg-white hover:bg-cyan-700 px-3 py-1 rounded text-[var(--foreground)] transition-colors"
                       >
                         📋 Copy
                       </button>
                     </div>
-                    <div className="bg-slate-700/50 rounded p-3 text-slate-100 font-mono text-sm">
+                    <div className="bg-zinc-700/50 rounded p-3 text-zinc-100 font-mono text-sm">
                       {title.text}
                     </div>
                   </div>

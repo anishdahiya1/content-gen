@@ -62,15 +62,15 @@ export default function HashtagsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
+    <main className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12 animate-fade-in">
-          <Link href="/" className="text-cyan-400 hover:text-cyan-300 mb-6 inline-block">
+          <Link href="/" className="text-[var(--foreground)] hover:text-zinc-300 mb-6 inline-block">
             ← Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-2">#️⃣ Hashtags</h1>
-          <p className="text-slate-400">Trending hashtags optimized per platform</p>
+          <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">#️⃣ Hashtags</h1>
+          <p className="text-[var(--foreground)]">Trending hashtags optimized per platform</p>
         </div>
 
         {/* Status Message */}
@@ -83,7 +83,7 @@ export default function HashtagsPage() {
         {/* Generate Button */}
         {Object.keys(hashtags).length === 0 && !loading && (
           <div className="card mb-8 text-center py-8">
-            <p className="text-slate-300 mb-4">Generate trending hashtags for your platforms</p>
+            <p className="text-zinc-300 mb-4">Generate trending hashtags for your platforms</p>
             <button
               onClick={handleGenerateHashtags}
               className="btn-primary px-8 py-3 text-lg"
@@ -97,7 +97,7 @@ export default function HashtagsPage() {
         {loading && (
           <div className="card mb-6 text-center py-8 animate-pulse">
             <div className="text-4xl mb-2">⏳</div>
-            <p className="text-slate-300">Generating hashtags...</p>
+            <p className="text-zinc-300">Generating hashtags...</p>
           </div>
         )}
 
@@ -106,17 +106,17 @@ export default function HashtagsPage() {
           <div className="grid gap-6">
             {Object.entries(hashtags).map(([platform, data]: [string, any]) => (
               <div key={platform} className="card">
-                <h3 className="text-lg font-semibold text-cyan-400 capitalize mb-4">{platform}</h3>
+                <h3 className="text-lg font-semibold text-[var(--foreground)] capitalize mb-4">{platform}</h3>
                 
                 {/* Hashtag Tags */}
                 <div className="mb-4">
-                  <p className="text-sm text-slate-400 mb-3">Popular tags:</p>
+                  <p className="text-sm text-[var(--foreground)] mb-3">Popular tags:</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {data.hashtags?.map((tag: string, i: number) => (
                       <span
                         key={i}
                         onClick={() => copyToClipboard(tag)}
-                        className="px-3 py-1 bg-cyan-900/30 border border-cyan-600 rounded-full text-sm text-cyan-300 hover:bg-cyan-800 cursor-pointer transition-colors"
+                        className="px-3 py-1 bg-cyan-900/30 border border-cyan-600 rounded-full text-sm text-zinc-300 hover:bg-cyan-800 cursor-pointer transition-colors"
                       >
                         {tag}
                       </span>
@@ -126,8 +126,8 @@ export default function HashtagsPage() {
 
                 {/* Full String */}
                 <div className="mb-4">
-                  <p className="text-sm text-slate-400 mb-2">Copy all:</p>
-                  <div className="bg-slate-700/50 rounded p-3 text-slate-100 text-sm break-words font-mono">
+                  <p className="text-sm text-[var(--foreground)] mb-2">Copy all:</p>
+                  <div className="bg-zinc-700/50 rounded p-3 text-zinc-100 text-sm break-words font-mono">
                     {data.hashtag_string}
                   </div>
                 </div>
@@ -135,7 +135,7 @@ export default function HashtagsPage() {
                 {/* Copy Button */}
                 <button
                   onClick={() => copyToClipboard(data.hashtag_string)}
-                  className="w-full text-sm bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded text-white transition-colors"
+                  className="w-full text-sm bg-white hover:bg-cyan-700 px-4 py-2 rounded text-[var(--foreground)] transition-colors"
                 >
                   📋 Copy All Hashtags
                 </button>

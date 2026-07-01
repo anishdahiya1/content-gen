@@ -91,7 +91,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen premium-bg py-16 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center relative overflow-hidden">
+    <main className="min-h-screen bg-[var(--background)] py-16 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center relative overflow-hidden">
       <Script 
         src="https://accounts.google.com/gsi/client" 
         onLoad={initGoogleSignIn}
@@ -99,36 +99,36 @@ export default function LoginPage() {
       />
 
       {/* Floating blurred ambient orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse-glow z-0 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-fuchsia-500/10 rounded-full blur-[140px] animate-pulse-glow z-0 pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-zinc-200/10 rounded-full blur-[120px] animate-pulse-glow z-0 pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-zinc-200/10 rounded-full blur-[140px] animate-pulse-glow z-0 pointer-events-none"></div>
 
       <div className="max-w-md w-full relative z-10 text-center space-y-8 animate-slide-up">
         {/* Logo Brand */}
         <div className="flex flex-col items-center gap-3">
-          <div className="w-16 h-16 rounded-2xl bg-[#080b12]/80 border border-slate-800/40 flex items-center justify-center shadow-xl animate-float">
-            <ClapperboardIcon className="w-8 h-8 text-indigo-400" />
+          <div className="w-16 h-16 rounded-2xl bg-black/80 border border-[var(--border)]/40 flex items-center justify-center shadow-xl ">
+            <ClapperboardIcon className="w-8 h-8 text-[var(--foreground)]" />
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent tracking-tight">
+            <h1 className="text-3xl font-extrabold bg-white bg-clip-text text-transparent tracking-tight">
               CreatorPilot AI
             </h1>
-            <p className="text-xs text-slate-400 font-mono tracking-widest uppercase mt-1">Creator OS Login</p>
+            <p className="text-xs text-[var(--foreground)] font-mono tracking-widest uppercase mt-1">Creator OS Login</p>
           </div>
         </div>
 
         {/* Central Card */}
-        <div className="card max-w-sm mx-auto p-8 border border-slate-800/30 shadow-2xl relative bg-slate-900/60 backdrop-blur-md space-y-6">
+        <div className="card max-w-sm mx-auto p-8 border border-[var(--border)]/30 shadow-2xl relative bg-[var(--panel)]/60 backdrop-blur-md space-y-6">
           <div>
-            <h2 className="text-lg font-bold text-white">Welcome back</h2>
-            <p className="text-slate-400 text-xs mt-1">Sign in with Google to access your vertical clips editor and copywriter RAG context</p>
+            <h2 className="text-lg font-bold text-[var(--foreground)]">Welcome back</h2>
+            <p className="text-[var(--foreground)] text-xs mt-1">Sign in with Google to access your vertical clips editor and copywriter RAG context</p>
           </div>
 
           {/* Google Sign-In Button Container */}
           <div className="flex flex-col items-center justify-center py-4 min-h-[50px] relative">
             {loading ? (
               <div className="flex flex-col items-center gap-2">
-                <RefreshCwIcon className="w-8 h-8 animate-spin text-indigo-400" />
-                <span className="text-[10px] text-indigo-300 font-mono tracking-wider animate-pulse">Authenticating session...</span>
+                <RefreshCwIcon className="w-8 h-8 animate-spin text-[var(--foreground)]" />
+                <span className="text-[10px] text-zinc-300 font-mono tracking-wider animate-pulse">Authenticating session...</span>
               </div>
             ) : (
               <div id="google-signin-button" className="transition-opacity duration-300"></div>
@@ -149,7 +149,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        <div className="text-xs text-slate-500 font-mono">
+        <div className="text-xs text-[var(--muted)] font-mono">
           * Uses secure Google OAuth2 login protocol.
         </div>
       </div>

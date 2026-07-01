@@ -65,15 +65,15 @@ export default function ClipsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
+    <main className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12 animate-fade-in">
-          <Link href="/results" className="text-cyan-400 hover:text-cyan-300 mb-6 inline-block">
+          <Link href="/results" className="text-[var(--foreground)] hover:text-zinc-300 mb-6 inline-block">
             ← Back to Results
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-2">🎬 Short-Form Clips</h1>
-          <p className="text-slate-400">Vertical 9:16 videos ready to publish</p>
+          <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">🎬 Short-Form Clips</h1>
+          <p className="text-[var(--foreground)]">Vertical 9:16 videos ready to publish</p>
         </div>
 
         {/* Status Message */}
@@ -86,7 +86,7 @@ export default function ClipsPage() {
         {/* Generate Button */}
         {clips.length === 0 && !generating && (
           <div className="card mb-6 text-center py-8">
-            <p className="text-slate-300 mb-4">Generate vertical 9:16 clips from your viral moments</p>
+            <p className="text-zinc-300 mb-4">Generate vertical 9:16 clips from your viral moments</p>
             <button
               onClick={handleGenerateClips}
               className="btn-primary px-6 py-3 text-lg"
@@ -100,8 +100,8 @@ export default function ClipsPage() {
         {generating && (
           <div className="card mb-6 text-center py-8 animate-pulse">
             <div className="text-4xl mb-2">⏳</div>
-            <p className="text-slate-300">Generating clips with FFmpeg...</p>
-            <p className="text-slate-500 text-sm mt-2">This may take a few minutes depending on clip length</p>
+            <p className="text-zinc-300">Generating clips with FFmpeg...</p>
+            <p className="text-[var(--muted)] text-sm mt-2">This may take a few minutes depending on clip length</p>
           </div>
         )}
 
@@ -112,25 +112,25 @@ export default function ClipsPage() {
               {clips.map((clip) => (
                 <div key={clip.clip_number} className="card-hover flex flex-col">
                   {/* Video Placeholder */}
-                  <div className="aspect-[9/16] bg-gradient-to-br from-slate-700 to-slate-600 rounded-lg mb-4 flex items-center justify-center border-2 border-cyan-600">
+                  <div className="aspect-[9/16] bg-white rounded-lg mb-4 flex items-center justify-center border-2 border-cyan-600">
                     <div className="text-center">
                       <div className="text-5xl mb-2">🎬</div>
-                      <p className="text-slate-200 font-semibold">Clip {clip.clip_number}</p>
-                      <p className="text-slate-400 text-sm">{clip.duration.toFixed(1)}s</p>
-                      <p className="text-cyan-400 text-xs mt-1 capitalize">{clip.clip_type}</p>
+                      <p className="text-zinc-200 font-semibold">Clip {clip.clip_number}</p>
+                      <p className="text-[var(--foreground)] text-sm">{clip.duration.toFixed(1)}s</p>
+                      <p className="text-[var(--foreground)] text-xs mt-1 capitalize">{clip.clip_type}</p>
                     </div>
                   </div>
 
                   {/* Info */}
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-semibold text-slate-300 capitalize">{clip.clip_type}</span>
-                      <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                      <span className="text-sm font-semibold text-zinc-300 capitalize">{clip.clip_type}</span>
+                      <span className="text-xl font-bold bg-white bg-clip-text text-transparent">
                         {clip.viral_score}%
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mb-3 line-clamp-2">{clip.segment}</p>
-                    <p className="text-xs text-slate-500 mb-4">
+                    <p className="text-xs text-[var(--foreground)] mb-3 line-clamp-2">{clip.segment}</p>
+                    <p className="text-xs text-[var(--muted)] mb-4">
                       📁 {clip.filename}
                     </p>
                     {clip.status === 'generated' ? (
@@ -143,7 +143,7 @@ export default function ClipsPage() {
                         </button>
                       </>
                     ) : (
-                      <div className="w-full bg-red-900/20 border border-red-700 rounded p-2 text-center text-red-300 text-xs">
+                      <div className="w-full bg-red-900/20 border border-red-700 rounded p-2 text-center text-zinc-300 text-xs">
                         ❌ {clip.error}
                       </div>
                     )}

@@ -8,7 +8,8 @@ import {
   UploadIcon, 
   MusicIcon, 
   RocketIcon, 
-  RefreshCwIcon 
+  RefreshCwIcon,
+  SparklesIcon
 } from '../components/Icons';
 
 export default function UploadPage() {
@@ -117,10 +118,9 @@ export default function UploadPage() {
         return;
       }
 
-      setStatus('✓ Upload successful! Enqueueing pipeline...');
+      setStatus('Upload successful! Enqueueing pipeline...');
       setIsUploading(false);
       
-      // Redirect to the workspace page with video_id and job_id
       window.location.href = `/workspace?video_id=${data.video_id}&job_id=${data.job_id}`;
     } catch (error) {
       setStatus(`Upload error: ${error}`);
@@ -153,10 +153,9 @@ export default function UploadPage() {
         return;
       }
 
-      setStatus(audioOnly ? '✓ Audio extraction enqueued! Redirecting...' : '✓ YouTube link enqueued! Redirecting to workspace...');
+      setStatus(audioOnly ? 'Audio extraction enqueued! Redirecting...' : 'YouTube link enqueued! Redirecting to workspace...');
       setIsSubmittingYoutube(false);
 
-      // Redirect to the workspace with the new video_id and job_id
       window.location.href = `/workspace?video_id=${data.video_id}&job_id=${data.job_id}`;
     } catch (error) {
       setStatus(`YouTube queue error: ${error}`);
@@ -165,26 +164,33 @@ export default function UploadPage() {
   };
 
   return (
-    <main className="min-h-screen premium-bg py-16 px-4 sm:px-6 lg:px-8 flex flex-col justify-center relative overflow-hidden">
+    <main className="min-h-screen bg-[var(--background)] py-16 px-4 sm:px-6 lg:px-8 flex flex-col justify-center relative overflow-hidden text-zinc-100">
       
       <div className="max-w-xl mx-auto w-full relative z-10">
         {/* Header */}
         <div className="mb-10 text-center">
-          <RocketIcon className="w-12 h-12 text-sky-400 mx-auto mb-3 animate-float" />
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-sky-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent mb-3 tracking-tight">
-            CreatorPilot AI Upload Console
+          <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center mx-auto mb-6">
+            <RocketIcon className="w-8 h-8 text-[var(--foreground)]" />
+          </div>
+          <h1 className="text-4xl font-bold text-[var(--foreground)] mb-3 tracking-tight">
+            CreatorPilot Upload
           </h1>
-          <p className="text-slate-400 text-sm">Upload local media or pull from YouTube to launch the AI operating pipeline</p>
+          <p className="text-[var(--muted)] text-sm">Upload local media or pull from YouTube to launch the AI pipeline</p>
+          <div className="mt-6">
+            <Link href="/studio" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--panel)] text-zinc-300 border border-[var(--border)] rounded-full text-sm font-bold hover:bg-white hover:text-black transition-colors">
+              <SparklesIcon className="w-4 h-4" /> Try the new AI Series Studio
+            </Link>
+          </div>
         </div>
 
         {/* Tab Toggle */}
-        <div className="flex border-b border-slate-850/50 bg-[#080b12]/40 rounded-t-xl overflow-hidden p-1 gap-1">
+        <div className="flex bg-[var(--background)] border border-zinc-900 rounded-t-xl overflow-hidden p-1 gap-1">
           <button
             onClick={() => { setActiveTab('file'); setStatus(null); }}
-            className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-lg text-center transition-all ${
+            className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-lg text-center transition-colors ${
               activeTab === 'file'
-                ? 'bg-sky-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#0d121f]/60'
+                ? 'bg-white text-black'
+                : 'text-[var(--muted)] hover:text-zinc-300 hover:bg-[var(--panel)]'
             }`}
           >
             <span className="flex items-center justify-center gap-2">
@@ -194,21 +200,21 @@ export default function UploadPage() {
           </button>
           <button
             onClick={() => { setActiveTab('youtube'); setStatus(null); }}
-            className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-lg text-center transition-all ${
+            className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-lg text-center transition-colors ${
               activeTab === 'youtube'
-                ? 'bg-sky-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#0d121f]/60'
+                ? 'bg-white text-black'
+                : 'text-[var(--muted)] hover:text-zinc-300 hover:bg-[var(--panel)]'
             }`}
           >
             <span className="flex items-center justify-center gap-2">
               <YoutubeIcon className="w-4 h-4" />
-              Paste YouTube Link
+              YouTube Link
             </span>
           </button>
         </div>
 
         {/* Console Box */}
-        <div className="card rounded-t-none border-t-0 animate-slide-up relative bg-slate-900/60 backdrop-blur-md">
+        <div className="bg-black border border-[var(--border)] rounded-b-xl p-8 shadow-2xl relative">
           {activeTab === 'file' ? (
             /* File Upload Form */
             <form onSubmit={handleFileUpload} className="space-y-6">
@@ -216,10 +222,10 @@ export default function UploadPage() {
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative rounded-xl border-2 border-dashed transition-all duration-300 p-10 text-center ${
+                className={`relative rounded-xl border-2 border-dashed transition-colors duration-300 p-10 text-center ${
                   isDragging
-                    ? 'border-cyan-400 bg-cyan-400/5'
-                    : 'border-slate-700 hover:border-cyan-500/50 bg-slate-950/20'
+                    ? 'border-white bg-[var(--panel)]'
+                    : 'border-[var(--border)] hover:border-zinc-600 bg-[var(--background)]'
                 }`}
               >
                 <input
@@ -230,17 +236,17 @@ export default function UploadPage() {
                   className="absolute inset-0 opacity-0 cursor-pointer"
                 />
                 <div className="space-y-3">
-                  <UploadIcon className="w-12 h-12 text-slate-500 mx-auto" />
+                  <UploadIcon className="w-12 h-12 text-zinc-600 mx-auto" />
                   <div>
-                    <p className="text-slate-200 font-semibold text-sm">
+                    <p className="text-zinc-200 font-semibold text-sm">
                       {selectedFile ? selectedFile.name : 'Drag & drop vertical/horizontal video'}
                     </p>
-                    <p className="text-slate-500 text-xs mt-1">
-                      {selectedFile ? 'Ready to process' : 'or click to search system files'}
+                    <p className="text-[var(--muted)] text-xs mt-1">
+                      {selectedFile ? 'Ready to process' : 'or click to browse'}
                     </p>
                   </div>
                   {selectedFile && (
-                    <p className="text-cyan-400 text-xs font-mono">
+                    <p className="text-[var(--foreground)] text-xs font-mono">
                       {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                     </p>
                   )}
@@ -248,10 +254,10 @@ export default function UploadPage() {
               </div>
 
               {/* Number of Clips Selector */}
-              <div className="space-y-2 bg-[#04060b]/40 border border-slate-850/50 rounded-xl p-4">
+              <div className="space-y-2 surface-panel p-4">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Number of Clips to Generate</label>
-                  <span className="text-sm font-extrabold text-indigo-400 font-mono">{numClips}</span>
+                  <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Number of Clips</label>
+                  <span className="text-sm font-extrabold text-[var(--foreground)] font-mono">{numClips}</span>
                 </div>
                 <input
                   type="range"
@@ -259,10 +265,10 @@ export default function UploadPage() {
                   max="5"
                   value={numClips}
                   onChange={(e) => setNumClips(parseInt(e.target.value, 10))}
-                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
-                  style={{ accentColor: '#0ea5e9' }}
+                  className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-white"
+                  style={{ accentColor: '#ffffff' }}
                 />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                <div className="flex justify-between text-[10px] text-[var(--muted)] font-mono">
                   <span>1 Clip</span>
                   <span>3 Clips (Default)</span>
                   <span>5 Clips</span>
@@ -270,36 +276,36 @@ export default function UploadPage() {
               </div>
 
               {/* Clip Style Brief */}
-              <div className="space-y-2 bg-[#04060b]/40 border border-sky-900/30 rounded-xl p-4">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                  🎯 Clip Style Brief
-                  <span className="ml-2 text-[10px] text-slate-500 normal-case font-normal">(optional)</span>
+              <div className="space-y-2 surface-panel p-4">
+                <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider block">
+                  Clip Style Brief
+                  <span className="ml-2 text-[10px] text-zinc-600 normal-case font-normal">(optional)</span>
                 </label>
                 <textarea
                   id="clip-prompt-file"
                   value={clipPrompt}
                   onChange={(e) => setClipPrompt(e.target.value)}
                   rows={3}
-                  placeholder="e.g. Make motivational clips with high-energy hooks. Focus on emotional storytelling moments only. Target Gen-Z audience."
-                  className="w-full bg-slate-950/60 border border-slate-700/60 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/30 transition-all leading-relaxed"
+                  placeholder="e.g. Focus on emotional storytelling moments. Target Gen-Z."
+                  className="input-field leading-relaxed resize-none"
                 />
-                <p className="text-[10px] text-slate-600 leading-relaxed">
-                  AI will prioritize clips matching this brief. Leave blank for default viral moment detection.
+                <p className="text-[10px] text-[var(--muted)] leading-relaxed">
+                  AI will prioritize clips matching this brief.
                 </p>
               </div>
 
               <button
                 type="submit"
                 disabled={!selectedFile || isUploading}
-                className="w-full btn-primary py-3 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full btn-primary py-3 text-sm disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isUploading ? (
                   <>
-                    <RefreshCwIcon className="w-4 h-4 animate-spin text-sky-200" /> Uploading video files...
+                    <RefreshCwIcon className="w-4 h-4 animate-spin text-[var(--muted)]" /> Uploading video...
                   </>
                 ) : (
                   <span className="flex items-center gap-2 justify-center">
-                    <RocketIcon className="w-4 h-4" /> Launch AI Pipeline
+                    <RocketIcon className="w-4 h-4" /> Launch Pipeline
                   </span>
                 )}
               </button>
@@ -308,48 +314,48 @@ export default function UploadPage() {
             /* YouTube URL Form */
             <form onSubmit={handleYoutubeSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">YouTube URL</label>
+                <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider block">YouTube URL</label>
                 <input
                   type="url"
                   placeholder="https://www.youtube.com/watch?v=..."
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
-                  className="input-field py-3 text-sm text-white"
+                  className="input-field py-3 text-sm text-[var(--foreground)]"
                   required
                 />
               </div>
 
               {/* Audio-Only Toggle */}
-              <div className="flex items-center justify-between p-4 bg-[#04060b]/40 border border-slate-850/50 rounded-xl">
+              <div className="flex items-center justify-between p-4 surface-panel">
                 <div className="flex items-center gap-3">
-                  <MusicIcon className="w-6 h-6 text-sky-400" />
+                  <MusicIcon className="w-6 h-6 text-[var(--foreground)]" />
                   <div>
-                    <p className="text-sm font-semibold text-slate-200">Audio Only Mode</p>
-                    <p className="text-xs text-slate-500">Extract MP3 audio instead of downloading video</p>
+                    <p className="text-sm font-semibold text-zinc-200">Audio Only Mode</p>
+                    <p className="text-xs text-[var(--muted)]">Extract audio instead of downloading video</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setAudioOnly(!audioOnly)}
-                  className={`relative w-14 h-7 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-500/50 ${
+                  className={`relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none ${
                     audioOnly
-                      ? 'bg-gradient-to-r from-sky-500 to-cyan-500 shadow-lg shadow-sky-500/20'
-                      : 'bg-slate-700'
+                      ? 'bg-white'
+                      : 'bg-zinc-800'
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-md transition-transform duration-300 ${
-                      audioOnly ? 'translate-x-7' : 'translate-x-0'
+                    className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full shadow-md transition-transform duration-300 ${
+                      audioOnly ? 'translate-x-7 bg-black' : 'translate-x-0 bg-zinc-400'
                     }`}
                   />
                 </button>
               </div>
 
               {/* Number of Clips Selector */}
-              <div className="space-y-2 bg-[#04060b]/40 border border-slate-850/50 rounded-xl p-4">
+              <div className="space-y-2 surface-panel p-4">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Number of Clips to Generate</label>
-                  <span className="text-sm font-extrabold text-indigo-400 font-mono">{numClips}</span>
+                  <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Number of Clips</label>
+                  <span className="text-sm font-extrabold text-[var(--foreground)] font-mono">{numClips}</span>
                 </div>
                 <input
                   type="range"
@@ -357,10 +363,10 @@ export default function UploadPage() {
                   max="5"
                   value={numClips}
                   onChange={(e) => setNumClips(parseInt(e.target.value, 10))}
-                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
-                  style={{ accentColor: '#0ea5e9' }}
+                  className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-white"
+                  style={{ accentColor: '#ffffff' }}
                 />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                <div className="flex justify-between text-[10px] text-[var(--muted)] font-mono">
                   <span>1 Clip</span>
                   <span>3 Clips (Default)</span>
                   <span>5 Clips</span>
@@ -368,32 +374,32 @@ export default function UploadPage() {
               </div>
 
               {/* Clip Style Brief (YouTube) */}
-              <div className="space-y-2 bg-[#04060b]/40 border border-sky-900/30 rounded-xl p-4">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                  🎯 Clip Style Brief
-                  <span className="ml-2 text-[10px] text-slate-500 normal-case font-normal">(optional)</span>
+              <div className="space-y-2 surface-panel p-4">
+                <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider block">
+                  Clip Style Brief
+                  <span className="ml-2 text-[10px] text-zinc-600 normal-case font-normal">(optional)</span>
                 </label>
                 <textarea
                   id="clip-prompt-youtube"
                   value={clipPrompt}
                   onChange={(e) => setClipPrompt(e.target.value)}
                   rows={3}
-                  placeholder="e.g. Make motivational clips with high-energy hooks. Focus on emotional storytelling moments only. Target Gen-Z audience."
-                  className="w-full bg-slate-950/60 border border-slate-700/60 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/30 transition-all leading-relaxed"
+                  placeholder="e.g. Focus on emotional storytelling moments. Target Gen-Z."
+                  className="input-field leading-relaxed resize-none"
                 />
-                <p className="text-[10px] text-slate-600 leading-relaxed">
-                  AI will prioritize clips matching this brief. Leave blank for default viral moment detection.
+                <p className="text-[10px] text-[var(--muted)] leading-relaxed">
+                  AI will prioritize clips matching this brief.
                 </p>
               </div>
 
               <button
                 type="submit"
                 disabled={!youtubeUrl || isSubmittingYoutube}
-                className="w-full btn-primary py-3 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full btn-primary py-3 text-sm disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isSubmittingYoutube ? (
                   <>
-                    <RefreshCwIcon className="w-4 h-4 animate-spin text-sky-200" /> {audioOnly ? 'Extracting audio...' : 'Queuing download pipeline...'}
+                    <RefreshCwIcon className="w-4 h-4 animate-spin text-[var(--muted)]" /> {audioOnly ? 'Extracting audio...' : 'Queuing download...'}
                   </>
                 ) : (
                   <>
@@ -403,7 +409,7 @@ export default function UploadPage() {
                       </span>
                     ) : (
                       <span className="flex items-center gap-2 justify-center">
-                        <RocketIcon className="w-4 h-4" /> Download & Process Link
+                        <RocketIcon className="w-4 h-4" /> Process Link
                       </span>
                     )}
                   </>
@@ -415,21 +421,17 @@ export default function UploadPage() {
           {/* Status logs */}
           {status && (
             <div className="mt-6">
-              {status.includes('successful') || status.includes('✓') ? (
-                <div className="badge-success text-center py-2.5 rounded-lg w-full block text-xs">{status}</div>
-              ) : status.includes('Uploading') || status.includes('download') ? (
-                <div className="badge-info text-center py-2.5 rounded-lg w-full block text-xs animate-pulse">{status}</div>
-              ) : (
-                <div className="badge-error text-center py-2.5 rounded-lg w-full block text-xs">{status}</div>
-              )}
+              <div className="bg-white/[0.03] border border-white/[0.05] text-zinc-300 text-center py-2.5 rounded-lg w-full block text-xs">
+                {status}
+              </div>
             </div>
           )}
         </div>
 
         {/* Back Link */}
         <div className="text-center mt-6">
-          <Link href="/workspace" className="text-sky-400 hover:text-sky-300 text-xs font-semibold">
-            ← Switch to Active Workspace
+          <Link href="/workspace" className="text-[var(--muted)] hover:text-[var(--foreground)] text-xs font-semibold transition-colors">
+            &larr; Switch to Active Workspace
           </Link>
         </div>
       </div>

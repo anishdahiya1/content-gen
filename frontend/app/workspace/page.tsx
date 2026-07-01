@@ -568,6 +568,38 @@ export default function WorkspacePage() {
     }
   };
 
+  const handleCreateAndRenderFullVideo = async () => {
+    if (!videoId || !videoData) return;
+
+    try {
+      // 1. Create the full video clip record in the backend
+      const createRes = await authFetch(`/api/v1/videos/${videoId}/create-full-clip`, {
+        method: 'POST',
+      });
+
+      if (!createRes.ok) {
+        throw new Error('Failed to create full video clip');
+      }
+
+      const createData = await createRes.json();
+      const newClipId = createData.clip_id;
+
+      // 2. Refresh the video details to pull in the newly created clip
+      const fetchRes = await authFetch(`/api/v1/videos/${videoId}`);
+      if (fetchRes.ok) {
+        const newData = await fetchRes.json();
+        setVideoData(newData);
+      }
+
+      // 3. Trigger the render for the new clip
+      await handleTriggerRender(newClipId);
+
+    } catch (err) {
+      console.error('Error creating and rendering full video:', err);
+      alert('Failed to start full video render. Please try again.');
+    }
+  };
+
   const handleTransliterate = async () => {
     if (!videoId || !videoData?.transcript) return;
     
@@ -694,19 +726,19 @@ export default function WorkspacePage() {
   };
 
   return (
-    <main className="min-h-screen premium-bg text-slate-100 flex flex-col font-sans relative overflow-hidden">
+    <main className="min-h-screen bg-[var(--background)] text-zinc-100 flex flex-col font-sans relative overflow-hidden">
       
       {/* Top Navbar */}
-      <nav className="border-b border-slate-800/60 bg-[#080b12]/60 backdrop-blur-md px-6 py-4 flex items-center justify-between z-10">
+      <nav className="border-b border-[var(--border)]/60 bg-black/60 backdrop-blur-md px-6 py-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
-          <Link href="/" className="text-indigo-400 hover:text-indigo-300 hover:scale-105 transition-transform animate-pulse">
+          <Link href="/" className="text-[var(--foreground)] hover:text-zinc-300 hover:scale-105 transition-transform animate-pulse">
             <ClapperboardIcon className="w-7 h-7" />
           </Link>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent tracking-tight">
               CreatorPilot AI Workspace
             </h1>
-            <p className="text-xs text-slate-400 font-mono">Status: Production Grade</p>
+            <p className="text-xs text-[var(--muted)] font-mono">Status: Production Grade</p>
           </div>
         </div>
 
@@ -715,13 +747,13 @@ export default function WorkspacePage() {
           {/* Brand Document Upload */}
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
-              <p className="text-xs text-slate-400">RAG Brand Guides</p>
-              <p className="text-xs text-indigo-400 font-semibold">{brandDocs.length} files loaded</p>
+              <p className="text-xs text-[var(--muted)]">RAG Brand Guides</p>
+              <p className="text-xs text-[var(--foreground)] font-semibold">{brandDocs.length} files loaded</p>
             </div>
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingDoc}
-              className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-indigo-900/30 transition-all"
+              className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-[var(--foreground)] rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-indigo-900/30 transition-all"
             >
               {uploadingDoc ? (
                 <>
@@ -746,7 +778,7 @@ export default function WorkspacePage() {
 
           {/* User Profile Info & Sign Out */}
           {currentUser && (
-            <div className="flex items-center gap-3 pl-4 border-l border-slate-800/60">
+            <div className="flex items-center gap-3 pl-4 border-l border-[var(--border)]/60">
               {currentUser.picture && (
                 <img 
                   src={currentUser.picture} 
@@ -756,12 +788,12 @@ export default function WorkspacePage() {
                 />
               )}
               <div className="hidden md:block text-left">
-                <p className="text-xs font-semibold text-slate-200 leading-none">{currentUser.name}</p>
-                <p className="text-[10px] text-slate-400 leading-none mt-1 truncate max-w-[120px]">{currentUser.email}</p>
+                <p className="text-xs font-semibold text-zinc-200 leading-none">{currentUser.name}</p>
+                <p className="text-[10px] text-[var(--muted)] leading-none mt-1 truncate max-w-[120px]">{currentUser.email}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="px-2.5 py-1.5 bg-slate-900/80 hover:bg-red-950/40 border border-slate-800 hover:border-red-900/30 hover:text-red-400 text-slate-400 rounded-lg text-xs font-semibold transition-all"
+                className="px-2.5 py-1.5 bg-[var(--panel)]/80 hover:bg-red-950/40 border border-[var(--border)] hover:border-red-900/30 hover:text-red-400 text-[var(--muted)] rounded-lg text-xs font-semibold transition-all"
               >
                 Sign Out
               </button>
@@ -772,7 +804,7 @@ export default function WorkspacePage() {
 
       {/* RAG Status Bar */}
       {docMessage && (
-        <div className="bg-indigo-950/80 border-b border-indigo-500/30 px-6 py-2 text-xs text-indigo-300 text-center animate-pulse">
+        <div className="bg-indigo-950/80 border-b border-indigo-500/30 px-6 py-2 text-xs text-zinc-300 text-center animate-pulse">
           {docMessage}
         </div>
       )}
@@ -782,26 +814,26 @@ export default function WorkspacePage() {
         
         {/* Loading / Empty State or Job Progress Tracker */}
         {loading || jobId ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-900/20 backdrop-blur">
+          <div className="flex-1 flex flex-col items-center justify-center p-8 bg-[var(--panel)]/20 backdrop-blur">
             {jobId ? (
-              <div className="max-w-md w-full card border-cyan-500/30 bg-slate-900/90 text-center space-y-6 shadow-2xl shadow-cyan-900/10">
-                <CpuIcon className="w-12 h-12 text-indigo-400 mx-auto animate-bounce" />
+              <div className="max-w-md w-full card border-cyan-500/30 bg-[var(--panel)]/90 text-center space-y-6 shadow-2xl shadow-cyan-900/10">
+                <CpuIcon className="w-12 h-12 text-[var(--foreground)] mx-auto animate-bounce" />
                 <div>
                   <h2 className="text-xl font-bold text-indigo-450">AI Background Pipeline</h2>
-                  <p className="text-slate-400 text-sm mt-1">{jobData?.job_type === 'full_pipeline' ? 'Transcribing & Reframing Video...' : jobData?.job_type === 'audio_download' ? 'Extracting Audio from YouTube...' : 'Processing Task...'}</p>
+                  <p className="text-[var(--muted)] text-sm mt-1">{jobData?.job_type === 'full_pipeline' ? 'Transcribing & Reframing Video...' : jobData?.job_type === 'audio_download' ? 'Extracting Audio from YouTube...' : 'Processing Task...'}</p>
                 </div>
                 
                 {/* Progress bar */}
-                <div className="w-full bg-slate-800 rounded-full h-3 border border-slate-700/60 overflow-hidden">
+                <div className="w-full bg-zinc-800 rounded-full h-3 border border-zinc-700/60 overflow-hidden">
                   <div
                     className="bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-600 h-full transition-all duration-500"
                     style={{ width: `${jobData?.progress || 5}%` }}
                   ></div>
                 </div>
 
-                <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
+                <div className="flex justify-between items-center text-xs text-[var(--muted)] font-mono">
                   <span>Progress: {Math.round(jobData?.progress || 5)}%</span>
-                  <span className="text-indigo-300">{jobData?.message || 'Connecting...'}</span>
+                  <span className="text-zinc-300">{jobData?.message || 'Connecting...'}</span>
                 </div>
 
                 {jobData?.status === 'failed' && (
@@ -815,32 +847,32 @@ export default function WorkspacePage() {
               </div>
             ) : (
               <div className="text-center space-y-4">
-                <RefreshCwIcon className="w-8 h-8 animate-spin text-indigo-500 mx-auto" />
-                <p className="text-slate-400">Fetching workspace assets...</p>
+                <RefreshCwIcon className="w-8 h-8 animate-spin text-[var(--muted)] mx-auto" />
+                <p className="text-[var(--muted)]">Fetching workspace assets...</p>
               </div>
             )}
           </div>
         ) : !videoId ? (
           /* Select Video Screen if None Selected */
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center max-w-xl mx-auto space-y-6">
-            <ClapperboardIcon className="w-16 h-16 text-slate-500 mx-auto animate-pulse" />
-            <h2 className="text-2xl font-bold text-white">Choose a video to open in the editor</h2>
-            <p className="text-slate-400 text-sm">
+            <ClapperboardIcon className="w-16 h-16 text-[var(--muted)] mx-auto animate-pulse" />
+            <h2 className="text-2xl font-bold text-[var(--foreground)]">Choose a video to open in the editor</h2>
+            <p className="text-[var(--muted)] text-sm">
               You haven't selected a video yet. Paste a YouTube link or drag-and-drop a video file on the homepage to start, or choose a recent upload below:
             </p>
             
             {recentVideos.length > 0 ? (
-              <div className="w-full bg-[#0b0f19]/80 border border-slate-850/50 rounded-xl overflow-hidden text-left">
-                <div className="px-4 py-2 border-b border-slate-850/50 bg-slate-900/40 text-xs font-semibold text-slate-400">Recent Videos</div>
-                <div className="divide-y divide-slate-850">
+              <div className="w-full bg-[var(--background)]/80 border border-[var(--border)]/50 rounded-xl overflow-hidden text-left">
+                <div className="px-4 py-2 border-b border-[var(--border)]/50 bg-[var(--panel)]/40 text-xs font-semibold text-[var(--muted)]">Recent Videos</div>
+                <div className="divide-y divide-zinc-800">
                   {recentVideos.map((v) => (
                     <button
                       key={v.id}
                       onClick={() => setVideoId(v.id)}
-                      className="w-full px-4 py-3 hover:bg-slate-900/60 text-left text-sm text-indigo-300 flex justify-between items-center transition-colors"
+                      className="w-full px-4 py-3 hover:bg-[var(--panel)]/60 text-left text-sm text-zinc-300 flex justify-between items-center transition-colors"
                     >
                       <span className="font-medium truncate max-w-xs">{v.title}</span>
-                      <span className="text-xs text-slate-500 font-mono">Open →</span>
+                      <span className="text-xs text-[var(--muted)] font-mono">Open →</span>
                     </button>
                   ))}
                 </div>
@@ -855,15 +887,15 @@ export default function WorkspacePage() {
           /* Active Workspace Layout */
           <>
             {/* Left Column: Video Player & Clips */}
-            <div className="w-full md:w-5/12 border-r border-slate-850/50 flex flex-col bg-transparent p-4 space-y-4 overflow-y-auto max-h-[85vh] md:max-h-none">
+            <div className="w-full md:w-5/12 border-r border-[var(--border)]/50 flex flex-col bg-transparent p-4 space-y-4 overflow-y-auto max-h-[85vh] md:max-h-none">
               
               {/* Toggle Clip view */}
-              <div className="flex items-center justify-between pb-2 border-b border-slate-850/40">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Video Source</span>
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]/40">
+                <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Video Source</span>
                 {activeClip && (
                   <button
                     onClick={() => setActiveClip(null)}
-                    className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold"
+                    className="text-xs text-[var(--foreground)] hover:text-zinc-300 font-semibold"
                   >
                     ← Switch to Original Video
                   </button>
@@ -873,13 +905,13 @@ export default function WorkspacePage() {
               {/* Player Container */}
               {videoData.audio_only ? (
                 /* Audio-Only Player */
-                <div className="bg-[#0b0f19]/80 rounded-xl overflow-hidden border border-slate-850/50 shadow-lg p-6 space-y-4">
+                <div className="bg-[var(--background)]/80 rounded-xl overflow-hidden border border-[var(--border)]/50 shadow-lg p-6 space-y-4">
                   <div className="flex items-center justify-center gap-3 py-6">
-                    <MusicIcon className="w-16 h-16 text-indigo-500 mx-auto animate-pulse" />
+                    <MusicIcon className="w-16 h-16 text-[var(--muted)] mx-auto animate-pulse" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-white">{videoData.filename}</p>
-                    <p className="text-xs text-slate-500 mt-1">Audio Only Mode</p>
+                    <p className="text-sm font-semibold text-[var(--foreground)]">{videoData.filename}</p>
+                    <p className="text-xs text-[var(--muted)] mt-1">Audio Only Mode</p>
                   </div>
                   <audio
                     ref={videoRef as any}
@@ -891,14 +923,14 @@ export default function WorkspacePage() {
                   <a
                     href={`/api/v1/videos/${videoData.id}/download`}
                     download
-                    className="w-full flex items-center justify-center gap-2 py-2.5 bg-indigo-650 hover:bg-indigo-600 text-white rounded-lg text-sm font-semibold shadow hover:scale-[1.01] transition-transform"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 bg-indigo-650 hover:bg-white text-[var(--foreground)] rounded-lg text-sm font-semibold shadow hover:scale-[1.01] transition-transform"
                   >
                     <DownloadIcon className="w-4 h-4" /> Download MP3 Audio
                   </a>
                 </div>
               ) : (
                 /* Video Player */
-                <div className="relative bg-[#04060b] rounded-xl overflow-hidden border border-slate-850/60 flex items-center justify-center shadow-2xl">
+                <div className="relative bg-black rounded-xl overflow-hidden border border-[var(--border)]/60 flex items-center justify-center shadow-2xl">
                   <video
                     ref={videoRef}
                     src={activeClip ? getStorageUrl(activeClip.output_path) : getStorageUrl(videoData.saved_path)}
@@ -909,30 +941,43 @@ export default function WorkspacePage() {
               )}
 
               {/* Clip Details Info */}
-              <div className="bg-[#0b0e17]/50 border border-slate-850/40 rounded-xl p-4">
-                <h3 className="font-semibold text-sm text-white">
-                  {activeClip ? (
-                    <span className="flex items-center gap-1.5">
-                      <VideoIcon className="w-4 h-4 text-indigo-400" />
-                      <span>Clip: {activeClip.title}</span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1.5">
-                      {videoData.audio_only ? <MusicIcon className="w-4 h-4 text-indigo-400" /> : <VideoIcon className="w-4 h-4 text-indigo-400" />}
-                      <span>{videoData.audio_only ? 'Audio' : 'Original'}: {videoData.filename}</span>
-                    </span>
+              <div className="bg-[var(--background)]/50 border border-[var(--border)]/40 rounded-xl p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="font-semibold text-sm text-[var(--foreground)]">
+                      {activeClip ? (
+                        <span className="flex items-center gap-1.5">
+                          <VideoIcon className="w-4 h-4 text-[var(--foreground)]" />
+                          <span>Clip: {activeClip.title}</span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1.5">
+                          {videoData.audio_only ? <MusicIcon className="w-4 h-4 text-[var(--foreground)]" /> : <VideoIcon className="w-4 h-4 text-[var(--foreground)]" />}
+                          <span>{videoData.audio_only ? 'Audio' : 'Original'}: {videoData.filename}</span>
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-[var(--muted)] mt-1 font-mono">
+                      {activeClip 
+                        ? `Timings: ${activeClip.start_time}s - ${activeClip.end_time}s | Duration: ${(activeClip.end_time - activeClip.start_time).toFixed(1)}s` 
+                        : `Duration: ${videoData.duration ? videoData.duration.toFixed(1) + 's' : 'N/A'}${videoData.audio_only ? ' | Format: MP3' : ''}`
+                      }
+                    </p>
+                  </div>
+                  {!activeClip && !videoData.audio_only && (
+                    <button
+                      onClick={handleCreateAndRenderFullVideo}
+                      className="px-3 py-1.5 bg-white hover:bg-zinc-200 text-[var(--foreground)] rounded text-[10px] font-bold shadow-md transition-all flex items-center gap-1.5"
+                    >
+                      <ClapperboardIcon className="w-3.5 h-3.5" />
+                      <span>Render Full Video as Reel</span>
+                    </button>
                   )}
-                </h3>
-                <p className="text-xs text-slate-400 mt-1 font-mono">
-                  {activeClip 
-                    ? `Timings: ${activeClip.start_time}s - ${activeClip.end_time}s | Duration: ${(activeClip.end_time - activeClip.start_time).toFixed(1)}s` 
-                    : `Duration: ${videoData.duration ? videoData.duration.toFixed(1) + 's' : 'N/A'}${videoData.audio_only ? ' | Format: MP3' : ''}`
-                  }
-                </p>
+                </div>
                 {activeClip?.explanation && (
-                  <div className="text-xs text-indigo-300 bg-indigo-950/10 border border-indigo-500/10 rounded p-2.5 mt-2.5 leading-relaxed">
+                  <div className="text-xs text-zinc-300 bg-indigo-950/10 border border-indigo-500/10 rounded p-2.5 mt-2.5 leading-relaxed">
                     <span className="flex items-start gap-1.5">
-                      <SparklesIcon className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
+                      <SparklesIcon className="w-4 h-4 text-[var(--foreground)] mt-0.5 shrink-0" />
                       <span><strong>Viral Hook Reason:</strong> {activeClip.explanation}</span>
                     </span>
                   </div>
@@ -942,15 +987,15 @@ export default function WorkspacePage() {
               {/* AI Clips List */}
               <div className="flex-1 flex flex-col min-h-[250px]">
                 <div className="flex justify-between items-center mb-3">
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">AI-Detected Clips</h4>
-                  <span className="text-[10px] text-indigo-400 font-mono font-semibold">Configured: {videoData.num_clips || 3} clips</span>
+                  <h4 className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">AI-Detected Clips</h4>
+                  <span className="text-[10px] text-[var(--foreground)] font-mono font-semibold">Configured: {videoData.num_clips || 3} clips</span>
                 </div>
 
                 {/* Re-detect Panel */}
-                <div className="bg-[#0b0e17]/50 border border-slate-850/50 rounded-xl p-3 mb-4 space-y-2">
+                <div className="bg-[var(--background)]/50 border border-[var(--border)]/50 rounded-xl p-3 mb-4 space-y-2">
                   <div className="flex justify-between items-center">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Re-detect count</label>
-                    <span className="text-xs font-extrabold text-indigo-400 font-mono">{numClipsToDetect}</span>
+                    <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Re-detect count</label>
+                    <span className="text-xs font-extrabold text-[var(--foreground)] font-mono">{numClipsToDetect}</span>
                   </div>
                   <input
                     type="range"
@@ -958,15 +1003,15 @@ export default function WorkspacePage() {
                     max="10"
                     value={numClipsToDetect}
                     onChange={(e) => setNumClipsToDetect(parseInt(e.target.value, 10))}
-                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-550"
+                    className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-550"
                     style={{ accentColor: '#6366f1' }}
                     disabled={isDetectingClips}
                   />
                   {/* Clip Style Brief for re-detect */}
                   <div className="pt-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                    <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block mb-1">
                       🎯 Style Brief
-                      <span className="ml-1 text-slate-600 normal-case font-normal">(optional)</span>
+                      <span className="ml-1 text-zinc-600 normal-case font-normal">(optional)</span>
                     </label>
                     <textarea
                       id="workspace-clip-prompt"
@@ -975,13 +1020,13 @@ export default function WorkspacePage() {
                       rows={2}
                       disabled={isDetectingClips}
                       placeholder="e.g. Motivational, high-energy hooks only..."
-                      className="w-full bg-slate-950/60 border border-slate-700/60 rounded-lg px-2.5 py-2 text-[11px] text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-violet-500/50 transition-all leading-relaxed disabled:opacity-40"
+                      className="w-full bg-[var(--background)]/60 border border-zinc-700/60 rounded-lg px-2.5 py-2 text-[11px] text-zinc-200 placeholder-zinc-600 resize-none focus:outline-none focus:border-violet-500/50 transition-all leading-relaxed disabled:opacity-40"
                     />
                   </div>
                   <button
                     onClick={handleRedetectClips}
                     disabled={isDetectingClips || !videoData.transcript}
-                    className="w-full py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-bold text-[10px] uppercase tracking-wider shadow disabled:opacity-50 transition-all"
+                    className="w-full py-1.5 bg-white hover:bg-zinc-200 text-[var(--foreground)] rounded font-bold text-[10px] uppercase tracking-wider shadow disabled:opacity-50 transition-all"
                   >
                     {isDetectingClips ? (
                       <span className="flex items-center gap-1.5 justify-center">
@@ -1014,41 +1059,45 @@ export default function WorkspacePage() {
                           }
                         }}
                         className={`card-hover p-4 cursor-pointer flex justify-between items-start ${
-                          activeClip?.id === clip.id ? 'border-indigo-550 bg-indigo-950/15' : 'bg-[#0b0e17]/50'
+                          activeClip?.id === clip.id ? 'border-indigo-550 bg-indigo-950/15' : 'bg-[var(--background)]/50'
                         }`}
                       >
                         <div className="flex-1 min-w-0 pr-2">
                           <div className="flex items-center gap-2 mb-1.5">
                             {clip.clip_type === 'hook' ? (
-                              <SparklesIcon className="w-4 h-4 text-indigo-400" />
+                              <SparklesIcon className="w-4 h-4 text-[var(--foreground)]" />
                             ) : clip.clip_type === 'educational' ? (
                               <LightbulbIcon className="w-4 h-4 text-yellow-400" />
                             ) : clip.clip_type === 'storytelling' ? (
                               <BookOpenIcon className="w-4 h-4 text-emerald-400" />
+                            ) : clip.clip_type === 'full_video' ? (
+                              <VideoIcon className="w-4 h-4 text-[var(--muted)]" />
                             ) : (
                               <HeartIcon className="w-4 h-4 text-rose-400" />
                             )}
-                            <span className="text-xs font-bold text-slate-300 capitalize">{clip.clip_type} clip</span>
+                            <span className="text-xs font-bold text-zinc-300 capitalize">
+                              {clip.clip_type === 'full_video' ? 'Full Video Reel' : `${clip.clip_type} clip`}
+                            </span>
                           </div>
                           {/* Timing badge */}
                           <div className="flex items-center gap-1.5 mb-1.5">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700/60 text-[10px] font-mono text-cyan-400 font-semibold tracking-wide">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-[10px] font-mono text-[var(--foreground)] font-semibold tracking-wide">
                               &#9201; {clip.start_time?.toFixed(1)}s – {clip.end_time?.toFixed(1)}s
                             </span>
                             {clip.duration && (
-                              <span className="text-[10px] text-slate-500 font-mono">
+                              <span className="text-[10px] text-[var(--muted)] font-mono">
                                 {clip.duration}s
                               </span>
                             )}
                           </div>
-                          <p className="text-xs font-semibold text-slate-200 truncate">{clip.title || 'Untitled Clip'}</p>
-                          <p className="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">{clip.segment_text}</p>
+                          <p className="text-xs font-semibold text-zinc-200 truncate">{clip.title || 'Untitled Clip'}</p>
+                          <p className="text-[10px] text-[var(--muted)] mt-1 line-clamp-2 leading-relaxed">{clip.segment_text}</p>
                         </div>
                         
                         <div className="text-right flex flex-col items-end gap-2">
                           <div>
-                            <span className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-450 bg-clip-text text-transparent">{clip.viral_score}%</span>
-                            <p className="text-[9px] text-slate-500">Viral score</p>
+                            <span className="text-lg font-bold bg-[var(--panel)] bg-clip-text text-transparent">{clip.viral_score}%</span>
+                            <p className="text-[9px] text-[var(--muted)]">Viral score</p>
                           </div>
                           
                           {/* Rendering action status */}
@@ -1074,7 +1123,7 @@ export default function WorkspacePage() {
                                 e.stopPropagation();
                                 handleTriggerRender(clip.id);
                               }}
-                              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold shadow-md transition-all"
+                              className="px-2.5 py-1 bg-white hover:bg-zinc-200 text-[var(--foreground)] rounded text-[10px] font-bold shadow-md transition-all"
                             >
                               <span className="flex items-center gap-1 justify-center">
                                 <ClapperboardIcon className="w-3.5 h-3.5" />
@@ -1086,7 +1135,7 @@ export default function WorkspacePage() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-6 bg-[#0b0e17]/20 rounded-xl border border-dashed border-slate-850/50 text-slate-500 text-xs">
+                    <div className="text-center py-6 bg-[var(--background)]/20 rounded-xl border border-dashed border-[var(--border)]/50 text-[var(--muted)] text-xs">
                       No clips detected. Try transcribing the video first.
                     </div>
                   )}
@@ -1095,11 +1144,11 @@ export default function WorkspacePage() {
             </div>
 
             {/* Center Column: Interactive Transcript */}
-            <div className="flex-1 border-r border-slate-850/50 flex flex-col bg-[#0b0e17]/20 p-4 min-h-[300px] overflow-hidden">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-850/50 mb-4">
+            <div className="flex-1 border-r border-[var(--border)]/50 flex flex-col bg-[var(--background)]/20 p-4 min-h-[300px] overflow-hidden">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]/50 mb-4">
                 <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Interactive Transcript</h3>
-                  <p className="text-[10px] text-slate-500 font-mono">Click any line to seek video player</p>
+                  <h3 className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Interactive Transcript</h3>
+                  <p className="text-[10px] text-[var(--muted)] font-mono">Click any line to seek video player</p>
                 </div>
                 {videoData?.transcript && (
                   <div className="flex items-center gap-2">
@@ -1108,8 +1157,8 @@ export default function WorkspacePage() {
                       onClick={() => setAutoScroll(!autoScroll)}
                       className={`px-2.5 py-1 rounded text-[10px] font-semibold transition-all flex items-center gap-1 border ${
                         autoScroll
-                          ? 'bg-indigo-600 hover:bg-indigo-550 border-indigo-500/30 text-white shadow-sm'
-                          : 'bg-[#080b12] hover:bg-slate-900 border-slate-800 text-slate-400'
+                          ? 'bg-white hover:bg-indigo-550 border-indigo-500/30 text-[var(--foreground)] shadow-sm'
+                          : 'bg-black hover:bg-[var(--panel)] border-[var(--border)] text-[var(--muted)]'
                       }`}
                       title={autoScroll ? "Click to pause auto-scrolling transcript" : "Click to follow video playhead"}
                     >
@@ -1120,7 +1169,7 @@ export default function WorkspacePage() {
                         </>
                       ) : (
                         <>
-                          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-0.5" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 mr-0.5" />
                           <span>Scroll Paused</span>
                         </>
                       )}
@@ -1133,21 +1182,21 @@ export default function WorkspacePage() {
                         <button
                           onClick={handleTransliterate}
                           disabled={transliterating}
-                          className="px-2 py-1 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-[10px] text-indigo-400 rounded font-semibold transition-all disabled:opacity-50"
+                          className="px-2 py-1 bg-[var(--panel)] hover:bg-zinc-800 border border-[var(--border)] text-[10px] text-[var(--foreground)] rounded font-semibold transition-all disabled:opacity-50"
                         >
                           {transliterating ? (
                             <span className="flex items-center gap-1">
-                              <RefreshCwIcon className="w-3 h-3 animate-spin text-indigo-400" />
+                              <RefreshCwIcon className="w-3 h-3 animate-spin text-[var(--foreground)]" />
                               <span>Converting...</span>
                             </span>
                           ) : isHindiScript ? (
                             <span className="flex items-center gap-1">
-                              <GlobeIcon className="w-3 h-3 text-indigo-400" />
+                              <GlobeIcon className="w-3 h-3 text-[var(--foreground)]" />
                               <span>Switch to Hinglish</span>
                             </span>
                           ) : (
                             <span className="flex items-center gap-1">
-                              <PenToolIcon className="w-3 h-3 text-indigo-400" />
+                              <PenToolIcon className="w-3 h-3 text-[var(--foreground)]" />
                               <span>Switch to Hindi Script</span>
                             </span>
                           )}
@@ -1187,7 +1236,7 @@ export default function WorkspacePage() {
                               onClick={() => seekTo(line.start)}
                               className={`cursor-pointer transition-all duration-300 rounded-lg p-3 flex flex-wrap gap-x-1.5 gap-y-1 select-none items-center ${
                                 isActive
-                                  ? 'bg-[#0d121f]/90 border border-slate-800/80 shadow-2xl scale-[1.01]'
+                                  ? 'bg-[var(--panel)]/90 border border-[var(--border)]/80 shadow-2xl scale-[1.01]'
                                   : isPast
                                   ? 'opacity-40 hover:opacity-85'
                                   : 'opacity-70 hover:opacity-100'
@@ -1200,10 +1249,10 @@ export default function WorkspacePage() {
                                     key={wIdx}
                                     className={`transition-all duration-100 px-1 py-0.5 rounded text-sm md:text-base ${
                                       isWordActive
-                                        ? 'text-indigo-400 bg-indigo-500/10 font-semibold border border-indigo-500/15'
+                                        ? 'text-[var(--foreground)] bg-zinc-200/10 font-semibold border border-indigo-500/15'
                                         : isActive
-                                        ? 'text-white'
-                                        : 'text-slate-300'
+                                        ? 'text-[var(--foreground)]'
+                                        : 'text-zinc-300'
                                     }`}
                                   >
                                     {w.word}
@@ -1222,17 +1271,17 @@ export default function WorkspacePage() {
                     const tokens = rawText.trim().split(/\s+/);
                     return (
                       <div>
-                        <div className="mb-3 mx-2 px-3 py-2 bg-[#0d121f]/80 border border-slate-850/50 rounded-lg text-[10px] text-slate-400 leading-relaxed">
+                        <div className="mb-3 mx-2 px-3 py-2 bg-[var(--panel)]/80 border border-[var(--border)]/50 rounded-lg text-[10px] text-[var(--muted)] leading-relaxed">
                           <span className="inline-flex items-center gap-1 mr-1 text-amber-500">
                             <HelpCircleIcon className="w-3.5 h-3.5" />
                           </span>
                           No word-level timestamps saved. Showing plain transcript — add a <strong>GROQ_API_KEY</strong> or <strong>GEMINI_API_KEY</strong> to enable precise word highlights.
                         </div>
-                        <div className="flex flex-wrap gap-x-1.5 gap-y-3 leading-relaxed text-sm text-slate-300 px-2">
+                        <div className="flex flex-wrap gap-x-1.5 gap-y-3 leading-relaxed text-sm text-zinc-300 px-2">
                           {tokens.map((token: string, index: number) => (
                             <span
                               key={index}
-                              className="rounded px-1 py-0.5 text-slate-300 hover:text-indigo-400 hover:bg-slate-900 transition-colors cursor-default select-none"
+                              className="rounded px-1 py-0.5 text-zinc-300 hover:text-[var(--foreground)] hover:bg-[var(--panel)] transition-colors cursor-default select-none"
                             >
                               {token}
                             </span>
@@ -1244,15 +1293,15 @@ export default function WorkspacePage() {
 
                   // ── Case 3: no transcript at all ──
                   return (
-                    <div className="text-center py-16 text-slate-500 flex flex-col items-center gap-4">
-                      <FileIcon className="w-12 h-12 text-slate-500 mx-auto" />
+                    <div className="text-center py-16 text-[var(--muted)] flex flex-col items-center gap-4">
+                      <FileIcon className="w-12 h-12 text-[var(--muted)] mx-auto" />
                       <div>
-                        <p className="text-sm font-semibold text-slate-400">Transcript not ready yet</p>
-                        <p className="text-xs mt-1 text-slate-500">The pipeline may still be processing. Click Refresh to reload.</p>
+                        <p className="text-sm font-semibold text-[var(--muted)]">Transcript not ready yet</p>
+                        <p className="text-xs mt-1 text-[var(--muted)]">The pipeline may still be processing. Click Refresh to reload.</p>
                       </div>
                       <button
                         onClick={() => videoId && fetchVideoDetails(videoId)}
-                        className="px-4 py-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-indigo-400 text-xs rounded-lg font-semibold transition-colors"
+                        className="px-4 py-2 bg-[var(--panel)] hover:bg-zinc-800 border border-[var(--border)] text-[var(--foreground)] text-xs rounded-lg font-semibold transition-colors"
                       >
                         <span className="flex items-center gap-1.5 justify-center">
                           <RefreshCwIcon className="w-3.5 h-3.5" />
@@ -1266,16 +1315,16 @@ export default function WorkspacePage() {
             </div>
 
             {/* Right Column: AI Sidebar (Chat Copilot & platform copywriter) */}
-            <div className="w-full md:w-3/12 flex flex-col bg-[#0b0e17]/20 overflow-hidden">
+            <div className="w-full md:w-3/12 flex flex-col bg-[var(--background)]/20 overflow-hidden">
               
               {/* Tab Selector */}
-              <div className="flex border-b border-slate-850/50 bg-[#080b12]/30">
+              <div className="flex border-b border-[var(--border)]/50 bg-black/30">
                 <button
                   onClick={() => setActiveTab('chat')}
                   className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all ${
                     activeTab === 'chat'
-                      ? 'border-b-2 border-indigo-500 text-indigo-400 bg-slate-900/20'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'border-b-2 border-indigo-500 text-[var(--foreground)] bg-[var(--panel)]/20'
+                      : 'text-[var(--muted)] hover:text-zinc-200'
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1.5">
@@ -1287,8 +1336,8 @@ export default function WorkspacePage() {
                   onClick={() => setActiveTab('copywriter')}
                   className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all ${
                     activeTab === 'copywriter'
-                      ? 'border-b-2 border-indigo-500 text-indigo-400 bg-slate-900/20'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'border-b-2 border-indigo-500 text-[var(--foreground)] bg-[var(--panel)]/20'
+                      : 'text-[var(--muted)] hover:text-zinc-200'
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1.5">
@@ -1300,8 +1349,8 @@ export default function WorkspacePage() {
                   onClick={() => setActiveTab('branding')}
                   className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all ${
                     activeTab === 'branding'
-                      ? 'border-b-2 border-indigo-500 text-indigo-400 bg-slate-900/20'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'border-b-2 border-indigo-500 text-[var(--foreground)] bg-[var(--panel)]/20'
+                      : 'text-[var(--muted)] hover:text-zinc-200'
                   }`}
                 >
                   <span className="flex items-center justify-center gap-1.5">
@@ -1315,12 +1364,12 @@ export default function WorkspacePage() {
               {activeTab === 'branding' && (
                 <div className="flex-1 flex flex-col overflow-y-auto p-4 space-y-5">
                   <div className="space-y-3">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Subtitle Style</label>
+                    <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block">Subtitle Style</label>
                     <div className="flex flex-col gap-2">
                       <select 
                         value={font} 
                         onChange={e => setFont(e.target.value)}
-                        className="bg-[#06080d] border border-slate-850/50 rounded p-2 text-xs text-white outline-none focus:border-indigo-500"
+                        className="bg-black border border-[var(--border)]/50 rounded p-2 text-xs text-[var(--foreground)] outline-none focus:border-indigo-500"
                       >
                         <option value="Arial">Arial</option>
                         <option value="Impact">Impact</option>
@@ -1328,11 +1377,11 @@ export default function WorkspacePage() {
                         <option value="Comic Sans MS">Comic Sans</option>
                       </select>
 
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">Caption Animation</label>
+                      <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block mt-1">Caption Animation</label>
                       <select 
                         value={subtitleAnim} 
                         onChange={e => setSubtitleAnim(e.target.value)}
-                        className="bg-[#06080d] border border-slate-850/50 rounded p-2 text-xs text-white outline-none focus:border-indigo-500 mb-1"
+                        className="bg-black border border-[var(--border)]/50 rounded p-2 text-xs text-[var(--foreground)] outline-none focus:border-indigo-500 mb-1"
                       >
                         <option value="none">Standard Subtitles (Static)</option>
                         <option value="classic">Classic Color Highlight</option>
@@ -1340,8 +1389,8 @@ export default function WorkspacePage() {
                         <option value="glow_highlighter">Glow Spotlight Zoom</option>
                       </select>
                       
-                      <div className="flex items-center justify-between bg-[#06080d] border border-slate-850/50 rounded p-2">
-                        <span className="text-xs text-slate-350">Highlight Color</span>
+                      <div className="flex items-center justify-between bg-black border border-[var(--border)]/50 rounded p-2">
+                        <span className="text-xs text-zinc-350">Highlight Color</span>
                         <input 
                           type="color" 
                           value={highlightColor} 
@@ -1350,13 +1399,13 @@ export default function WorkspacePage() {
                         />
                       </div>
                       
-                      <div className="flex items-center gap-1 bg-[#06080d] border border-slate-850/50 rounded p-1">
+                      <div className="flex items-center gap-1 bg-black border border-[var(--border)]/50 rounded p-1">
                         {['top', 'center', 'bottom'].map(pos => (
                           <button
                             key={pos}
                             onClick={() => setSubtitlePos(pos)}
                             className={`flex-1 py-1 text-[10px] uppercase font-bold rounded ${
-                              subtitlePos === pos ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-900'
+                              subtitlePos === pos ? 'bg-white text-[var(--foreground)]' : 'text-[var(--muted)] hover:bg-[var(--panel)]'
                             }`}
                           >
                             {pos}
@@ -1367,9 +1416,9 @@ export default function WorkspacePage() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Watermark / Logo</label>
+                    <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block">Watermark / Logo</label>
                     <div 
-                      className="border-2 border-dashed border-slate-850/50 rounded-lg p-4 text-center hover:border-indigo-500 transition-colors cursor-pointer"
+                      className="border-2 border-dashed border-[var(--border)]/50 rounded-lg p-4 text-center hover:border-indigo-500 transition-colors cursor-pointer"
                       onClick={() => watermarkInputRef.current?.click()}
                     >
                       <input 
@@ -1380,12 +1429,12 @@ export default function WorkspacePage() {
                         onChange={handleUploadWatermark}
                       />
                       {watermarkPath ? (
-                        <div className="text-xs text-indigo-400 font-semibold truncate max-w-full">
+                        <div className="text-xs text-[var(--foreground)] font-semibold truncate max-w-full">
                           ✓ {watermarkPath.split('/').pop() || watermarkPath.split('\\').pop()}
                         </div>
                       ) : (
-                        <div className="text-xs text-slate-450">
-                          <ImageIcon className="w-8 h-8 text-slate-500 mx-auto mb-1" />
+                        <div className="text-xs text-zinc-450">
+                          <ImageIcon className="w-8 h-8 text-[var(--muted)] mx-auto mb-1" />
                           Upload PNG/JPG
                         </div>
                       )}
@@ -1393,13 +1442,13 @@ export default function WorkspacePage() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">AI Enhancements</label>
-                    <label className="flex items-center justify-between bg-[#06080d] border border-slate-850/50 rounded p-3 cursor-pointer hover:border-indigo-500 transition-colors">
+                    <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block">AI Enhancements</label>
+                    <label className="flex items-center justify-between bg-black border border-[var(--border)]/50 rounded p-3 cursor-pointer hover:border-indigo-500 transition-colors">
                       <div className="flex flex-col">
-                        <span className="text-xs text-white font-semibold">AI B-Roll Insertion</span>
-                        <span className="text-[10px] text-slate-500 font-mono">Auto-overlay images</span>
+                        <span className="text-xs text-[var(--foreground)] font-semibold">AI B-Roll Insertion</span>
+                        <span className="text-[10px] text-[var(--muted)] font-mono">Auto-overlay images</span>
                       </div>
-                      <div className={`w-10 h-5 rounded-full p-0.5 transition-colors ${brollEnabled ? 'bg-indigo-600' : 'bg-slate-700'}`}>
+                      <div className={`w-10 h-5 rounded-full p-0.5 transition-colors ${brollEnabled ? 'bg-white' : 'bg-zinc-700'}`}>
                         <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${brollEnabled ? 'translate-x-5' : 'translate-x-0'}`}></div>
                       </div>
                       <input 
@@ -1415,7 +1464,7 @@ export default function WorkspacePage() {
                     <button
                       onClick={handleSaveSettings}
                       disabled={savingSettings}
-                      className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-bold text-xs shadow disabled:opacity-50 transition-colors"
+                      className="w-full py-2 bg-white hover:bg-zinc-200 text-[var(--foreground)] rounded font-bold text-xs shadow disabled:opacity-50 transition-colors"
                     >
                       {savingSettings ? (
                         <span className="flex items-center gap-1.5 justify-center">
@@ -1427,7 +1476,7 @@ export default function WorkspacePage() {
                         </span>
                       )}
                     </button>
-                    <p className="text-[10px] text-slate-500 text-center mt-2">Saved settings apply when rendering clips.</p>
+                    <p className="text-[10px] text-[var(--muted)] text-center mt-2">Saved settings apply when rendering clips.</p>
                   </div>
                 </div>
               )}
@@ -1442,18 +1491,18 @@ export default function WorkspacePage() {
                         key={i}
                         className={`flex flex-col max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed ${
                           msg.role === 'user'
-                            ? 'bg-indigo-600 text-white ml-auto rounded-tr-none'
-                            : 'bg-[#0d121f]/90 border border-slate-850/50 text-slate-105 mr-auto rounded-tl-none'
+                            ? 'bg-white text-[var(--foreground)] ml-auto rounded-tr-none'
+                            : 'bg-[var(--panel)]/90 border border-[var(--border)]/50 text-zinc-105 mr-auto rounded-tl-none'
                         }`}
                       >
-                        <span className="font-semibold capitalize text-[10px] text-slate-400 mb-1">
+                        <span className="font-semibold capitalize text-[10px] text-[var(--muted)] mb-1">
                           {msg.role === 'user' ? 'You' : 'CreatorPilot AI'}
                         </span>
                         <p className="whitespace-pre-wrap">{msg.content}</p>
                       </div>
                     ))}
                     {chatLoading && (
-                      <div className="bg-[#0d121f]/90 border border-slate-850/50 text-slate-300 rounded-2xl rounded-tl-none p-3 text-xs mr-auto max-w-[85%] animate-pulse">
+                      <div className="bg-[var(--panel)]/90 border border-[var(--border)]/50 text-zinc-300 rounded-2xl rounded-tl-none p-3 text-xs mr-auto max-w-[85%] animate-pulse">
                         Thinking...
                       </div>
                     )}
@@ -1466,12 +1515,12 @@ export default function WorkspacePage() {
                       value={chatInput}
                       onChange={(e) => setChatInput(e.target.value)}
                       placeholder="Chat with your video..."
-                      className="flex-1 bg-[#06080d] border border-slate-850/50 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500"
+                      className="flex-1 bg-black border border-[var(--border)]/50 rounded-lg px-3 py-2 text-xs text-[var(--foreground)] placeholder-zinc-600 focus:outline-none focus:border-indigo-500"
                     />
                     <button
                       type="submit"
                       disabled={chatLoading}
-                      className="px-4 bg-indigo-600 hover:bg-indigo-550 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-colors"
+                      className="px-4 bg-white hover:bg-indigo-550 text-[var(--foreground)] rounded-lg text-xs font-bold disabled:opacity-50 transition-colors"
                     >
                       Send
                     </button>
@@ -1485,7 +1534,7 @@ export default function WorkspacePage() {
                   
                   {/* Platform Picker */}
                   <div>
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Target Platform</label>
+                    <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block mb-2">Target Platform</label>
                     <div className="grid grid-cols-3 gap-1">
                       {['linkedin', 'instagram', 'youtube', 'twitter', 'tiktok'].map((platform) => (
                         <button
@@ -1493,8 +1542,8 @@ export default function WorkspacePage() {
                           onClick={() => setSelectedPlatform(platform)}
                           className={`py-1.5 text-[10px] font-bold rounded capitalize transition-all ${
                             selectedPlatform === platform
-                              ? 'bg-indigo-600 text-white'
-                              : 'bg-slate-900 text-slate-400 hover:bg-slate-850'
+                              ? 'bg-white text-[var(--foreground)]'
+                              : 'bg-[var(--panel)] text-[var(--muted)] hover:bg-zinc-800'
                           }`}
                         >
                           {platform}
@@ -1521,23 +1570,23 @@ export default function WorkspacePage() {
                   </button>
 
                   {copyStatus && (
-                    <div className="text-[10px] text-indigo-400 text-center font-mono">{copyStatus}</div>
+                    <div className="text-[10px] text-[var(--foreground)] text-center font-mono">{copyStatus}</div>
                   )}
 
                   {/* Generated Outputs */}
                   <div className="flex-1 overflow-y-auto space-y-4 pr-1">
                     {captions.length > 0 && (
                       <div className="space-y-3">
-                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Generated Copy Options</h4>
+                        <h4 className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Generated Copy Options</h4>
                         {/* Match platform filters */}
-                        <div className="card bg-[#0b0e17]/60 border-slate-850/50 p-3 text-xs leading-relaxed font-mono relative group">
+                        <div className="card bg-[var(--background)]/60 border-[var(--border)]/50 p-3 text-xs leading-relaxed font-mono relative group">
                           <button
                             onClick={() => {
                               const txt = captions[0]?.text || '';
                               navigator.clipboard.writeText(txt);
                               alert('Copied to clipboard!');
                             }}
-                            className="absolute top-2 right-2 bg-slate-900 text-slate-450 hover:text-white px-2 py-1 rounded text-[10px] flex items-center gap-1"
+                            className="absolute top-2 right-2 bg-[var(--panel)] text-zinc-450 hover:text-[var(--foreground)] px-2 py-1 rounded text-[10px] flex items-center gap-1"
                           >
                             <CopyIcon className="w-3 h-3" />
                             <span>Copy</span>
@@ -1547,14 +1596,14 @@ export default function WorkspacePage() {
                         </div>
 
                         {titles.length > 0 && (
-                          <div className="card bg-[#0b0e17]/60 border-slate-850/50 p-3 text-xs leading-relaxed font-mono relative">
+                          <div className="card bg-[var(--background)]/60 border-[var(--border)]/50 p-3 text-xs leading-relaxed font-mono relative">
                             <button
                               onClick={() => {
                                 const txt = titles[0]?.text || '';
                                 navigator.clipboard.writeText(txt);
                                 alert('Copied to clipboard!');
                               }}
-                              className="absolute top-2 right-2 bg-slate-900 text-slate-450 hover:text-white px-2 py-1 rounded text-[10px] flex items-center gap-1"
+                              className="absolute top-2 right-2 bg-[var(--panel)] text-zinc-450 hover:text-[var(--foreground)] px-2 py-1 rounded text-[10px] flex items-center gap-1"
                             >
                               <CopyIcon className="w-3 h-3" />
                               <span>Copy</span>

@@ -4,15 +4,15 @@ import Link from 'next/link';
 
 export default function ResultsPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
+    <main className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12 animate-fade-in">
-          <Link href="/" className="text-cyan-400 hover:text-cyan-300 mb-6 inline-block">
+          <Link href="/" className="text-[var(--foreground)] hover:text-zinc-300 mb-6 inline-block">
             ← Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-2">Content Results</h1>
-          <p className="text-slate-400">View and manage your generated content</p>
+          <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">Content Results</h1>
+          <p className="text-[var(--foreground)]">View and manage your generated content</p>
         </div>
 
         {/* Results Grid */}
@@ -21,9 +21,9 @@ export default function ResultsPage() {
           <Link href="/results/viral-clips">
             <div className="card-hover cursor-pointer h-full hover:scale-105 transition-transform">
               <div className="text-5xl mb-3">🎯</div>
-              <h3 className="font-semibold text-lg text-cyan-400">Viral Clips</h3>
-              <p className="text-slate-400 text-sm mt-2">Identify the most engaging moments</p>
-              <div className="mt-4 text-xs text-slate-500">Powered by AI analysis</div>
+              <h3 className="font-semibold text-lg text-[var(--foreground)]">Viral Clips</h3>
+              <p className="text-[var(--foreground)] text-sm mt-2">Identify the most engaging moments</p>
+              <div className="mt-4 text-xs text-[var(--muted)]">Powered by AI analysis</div>
             </div>
           </Link>
 
@@ -31,9 +31,9 @@ export default function ResultsPage() {
           <Link href="/results/clips">
             <div className="card-hover cursor-pointer h-full hover:scale-105 transition-transform">
               <div className="text-5xl mb-3">🎬</div>
-              <h3 className="font-semibold text-lg text-cyan-400">Short-Form Clips</h3>
-              <p className="text-slate-400 text-sm mt-2">Ready-to-post vertical videos</p>
-              <div className="mt-4 text-xs text-slate-500">9:16 format with subtitles</div>
+              <h3 className="font-semibold text-lg text-[var(--foreground)]">Short-Form Clips</h3>
+              <p className="text-[var(--foreground)] text-sm mt-2">Ready-to-post vertical videos</p>
+              <div className="mt-4 text-xs text-[var(--muted)]">9:16 format with subtitles</div>
             </div>
           </Link>
 
@@ -41,9 +41,9 @@ export default function ResultsPage() {
           <Link href="/results/captions">
             <div className="card-hover cursor-pointer h-full hover:scale-105 transition-transform">
               <div className="text-5xl mb-3">✍️</div>
-              <h3 className="font-semibold text-lg text-cyan-400">Captions & Titles</h3>
-              <p className="text-slate-400 text-sm mt-2">Platform-optimized copy</p>
-              <div className="mt-4 text-xs text-slate-500">Multiple styles per platform</div>
+              <h3 className="font-semibold text-lg text-[var(--foreground)]">Captions & Titles</h3>
+              <p className="text-[var(--foreground)] text-sm mt-2">Platform-optimized copy</p>
+              <div className="mt-4 text-xs text-[var(--muted)]">Multiple styles per platform</div>
             </div>
           </Link>
 
@@ -51,9 +51,9 @@ export default function ResultsPage() {
           <Link href="/results/hashtags">
             <div className="card-hover cursor-pointer h-full hover:scale-105 transition-transform">
               <div className="text-5xl mb-3">#️⃣</div>
-              <h3 className="font-semibold text-lg text-cyan-400">Hashtags</h3>
-              <p className="text-slate-400 text-sm mt-2">Trending tags per platform</p>
-              <div className="mt-4 text-xs text-slate-500">Maximize discoverability</div>
+              <h3 className="font-semibold text-lg text-[var(--foreground)]">Hashtags</h3>
+              <p className="text-[var(--foreground)] text-sm mt-2">Trending tags per platform</p>
+              <div className="mt-4 text-xs text-[var(--muted)]">Maximize discoverability</div>
             </div>
           </Link>
 
@@ -61,9 +61,9 @@ export default function ResultsPage() {
           <Link href="/results/publishing">
             <div className="card-hover cursor-pointer h-full hover:scale-105 transition-transform">
               <div className="text-5xl mb-3">📤</div>
-              <h3 className="font-semibold text-lg text-cyan-400">Publishing</h3>
-              <p className="text-slate-400 text-sm mt-2">One-click multi-platform publish</p>
-              <div className="mt-4 text-xs text-slate-500">YouTube, Instagram, TikTok & more</div>
+              <h3 className="font-semibold text-lg text-[var(--foreground)]">Publishing</h3>
+              <p className="text-[var(--foreground)] text-sm mt-2">One-click multi-platform publish</p>
+              <div className="mt-4 text-xs text-[var(--muted)]">YouTube, Instagram, TikTok & more</div>
             </div>
           </Link>
 
@@ -71,9 +71,9 @@ export default function ResultsPage() {
           <Link href="/results/analytics">
             <div className="card-hover cursor-pointer h-full hover:scale-105 transition-transform">
               <div className="text-5xl mb-3">📊</div>
-              <h3 className="font-semibold text-lg text-cyan-400">Analytics</h3>
-              <p className="text-slate-400 text-sm mt-2">Track performance & engagement</p>
-              <div className="mt-4 text-xs text-slate-500">Coming soon</div>
+              <h3 className="font-semibold text-lg text-[var(--foreground)]">Analytics</h3>
+              <p className="text-[var(--foreground)] text-sm mt-2">Track performance & engagement</p>
+              <div className="mt-4 text-xs text-[var(--muted)]">Coming soon</div>
             </div>
           </Link>
         </div>

@@ -98,3 +98,58 @@ async def create_clips(request: GenerateClipsRequest, db: Session = Depends(get_
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Clip generation error: {str(exc)}")
 
+
+@router.post("/videos/{video_id}/create-full-clip")
+async def create_full_clip(video_id: int, db: Session = Depends(get_db)) -> JSONResponse:
+    """
+    Creates a Clip record representing the full video duration.
+    This allows the frontend to trigger standard FFmpeg rendering for the whole video.
+    """
+    video = db.query(Video).filter(Video.id == video_id).first()
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+        
+    duration = video.duration
+    # Fallback duration if not set in DB
+    if not duration or duration <= 0:
+        duration = 60.0 # Default fallback, ideally shouldn't happen
+        
+    # Check if a full video clip already exists
+    existing_clip = db.query(Clip).filter(
+        Clip.video_id == video_id,
+        Clip.clip_type == "full_video"
+    ).first()
+    
+    if existing_clip:
+        # Just reset status to pending so it can be re-rendered
+        existing_clip.status = "pending"
+        db.commit()
+        return JSONResponse({
+            "status": "success",
+            "clip_id": existing_clip.id,
+            "message": "Existing full video clip found and reset"
+        })
+        
+    # Create new clip
+    new_clip = Clip(
+        video_id=video_id,
+        start_time=0.0,
+        end_time=duration,
+        segment_text="Full video transcription.",
+        viral_score=100.0,
+        clip_type="full_video",
+        title="Full Video Reel",
+        explanation="The entire video formatted as a vertical reel.",
+        status="pending"
+    )
+    
+    db.add(new_clip)
+    db.commit()
+    db.refresh(new_clip)
+    
+    return JSONResponse({
+        "status": "success",
+        "clip_id": new_clip.id,
+        "message": "Full video clip created successfully"
+    })
+

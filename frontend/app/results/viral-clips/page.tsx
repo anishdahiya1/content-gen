@@ -59,15 +59,15 @@ export default function ViralClipsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
+    <main className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12 animate-fade-in">
-          <Link href="/" className="text-cyan-400 hover:text-cyan-300 mb-6 inline-block">
+          <Link href="/" className="text-[var(--foreground)] hover:text-zinc-300 mb-6 inline-block">
             ← Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-2">🎯 Viral Clip Moments</h1>
-          <p className="text-slate-400">AI-detected moments most likely to go viral</p>
+          <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">🎯 Viral Clip Moments</h1>
+          <p className="text-[var(--foreground)]">AI-detected moments most likely to go viral</p>
         </div>
 
         {/* Info Card */}
@@ -87,7 +87,7 @@ export default function ViralClipsPage() {
         {/* Analyze Button */}
         {clips.length === 0 && !loading && (
           <div className="card mb-6 text-center py-8">
-            <p className="text-slate-300 mb-4">Analyze your transcript to find viral moments</p>
+            <p className="text-zinc-300 mb-4">Analyze your transcript to find viral moments</p>
             <button
               onClick={handleAnalyzeClips}
               className="btn-primary px-8 py-3 text-lg"
@@ -101,8 +101,8 @@ export default function ViralClipsPage() {
         {loading && (
           <div className="card mb-6 text-center py-8 animate-pulse">
             <div className="text-4xl mb-2">⏳</div>
-            <p className="text-slate-300">Analyzing transcript for viral moments...</p>
-            <p className="text-slate-500 text-sm mt-2">Using AI to identify high-engagement segments</p>
+            <p className="text-zinc-300">Analyzing transcript for viral moments...</p>
+            <p className="text-[var(--muted)] text-sm mt-2">Using AI to identify high-engagement segments</p>
           </div>
         )}
 
@@ -119,17 +119,17 @@ export default function ViralClipsPage() {
                           {clip.clip_type === 'hook' ? '🪝' : clip.clip_type === 'emotional' ? '❤️' : clip.clip_type === 'storytelling' ? '📖' : clip.clip_type === 'educational' ? '💡' : '⭐'}
                         </span>
                         <div>
-                          <p className="font-semibold text-white capitalize">{clip.clip_type} Moment</p>
-                          <p className="text-sm text-slate-400">{clip.start_time.toFixed(1)}s - {clip.end_time.toFixed(1)}s ({(clip.end_time - clip.start_time).toFixed(1)}s)</p>
+                          <p className="font-semibold text-[var(--foreground)] capitalize">{clip.clip_type} Moment</p>
+                          <p className="text-sm text-[var(--foreground)]">{clip.start_time.toFixed(1)}s - {clip.end_time.toFixed(1)}s ({(clip.end_time - clip.start_time).toFixed(1)}s)</p>
                         </div>
                       </div>
-                      <p className="text-slate-300 mt-3 bg-slate-700/30 rounded p-3">{clip.segment}</p>
+                      <p className="text-zinc-300 mt-3 bg-zinc-700/30 rounded p-3">{clip.segment}</p>
                     </div>
                     <div className="text-right ml-4">
-                      <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                      <div className="text-3xl font-bold bg-white bg-clip-text text-transparent">
                         {clip.viral_score}%
                       </div>
-                      <p className="text-xs text-slate-400">Viral Score</p>
+                      <p className="text-xs text-[var(--foreground)]">Viral Score</p>
                     </div>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ export default function ViralClipsPage() {
 
             {/* Next Action */}
             <div className="mt-8 card">
-              <h3 className="text-lg font-semibold text-slate-200 mb-4">📊 Ready for Next Step?</h3>
+              <h3 className="text-lg font-semibold text-zinc-200 mb-4">📊 Ready for Next Step?</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Link href="/results/clips">
                   <button className="w-full btn-primary py-3 text-lg">

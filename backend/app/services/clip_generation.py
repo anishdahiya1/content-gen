@@ -241,6 +241,15 @@ def generate_clips(video_path: str, clips: List[Dict[str, Any]], branding_settin
             crop_w = int(orig_h * (9.0 / 16.0))
             crop_h = orig_h
 
+            # Clamp crop dimensions to not exceed original dimensions
+            if crop_w > orig_w:
+                crop_w = orig_w
+                # To maintain 9:16 aspect ratio, adjust crop_h
+                crop_h = int(orig_w * (16.0 / 9.0))
+                # Clamp crop_h as well just in case
+                if crop_h > orig_h:
+                    crop_h = orig_h
+
             if face_x < 0:
                 face_x = orig_w / 2.0
 
@@ -249,12 +258,12 @@ def generate_clips(video_path: str, clips: List[Dict[str, Any]], branding_settin
 
             ass_filter_path = str(ass_path).replace("\\", "/").replace(":", "\\:")
 
-            # Base inputs and filters using frame-accurate output seeking
+            # Base inputs and filters using fast input seeking
             duration = end_time - start_time
             cmd = [
                 "ffmpeg", "-y",
-                "-i", video_path,
                 "-ss", str(start_time),
+                "-i", video_path,
                 "-t", str(duration)
             ]
             
@@ -320,7 +329,12 @@ def generate_clips(video_path: str, clips: List[Dict[str, Any]], branding_settin
             ])
 
             print(f"★ Executing FFmpeg command for clip {clip_id}: {' '.join(cmd)}")
-            result = subprocess.run(cmd, check=True, capture_output=True)
+            try:
+                result = subprocess.run(cmd, check=True, capture_output=True)
+            except subprocess.CalledProcessError as e:
+                err_out = e.stderr.decode('utf-8', errors='replace') if e.stderr else 'No stderr'
+                print(f"FFmpeg Error Output:\n{err_out}")
+                raise Exception(f"FFmpeg failed: {err_out}")
 
             # Cleanup ASS file
             if ass_path.exists():
@@ -343,7 +357,8 @@ def generate_clips(video_path: str, clips: List[Dict[str, Any]], branding_settin
             })
 
         except Exception as e:
-            tb = traceback.format_exc() if 'traceback' in globals() else str(e)
+            import traceback
+            tb = traceback.format_exc()
             print(f"Failed to generate clip {clip_id}: {e}\n{tb}")
             generated.append({
                 "clip_number": clip_id,

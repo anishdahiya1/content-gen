@@ -3,141 +3,98 @@
 @tailwind utilities;
 
 @layer base {
-  html, body {
-    @apply bg-[#020308] text-slate-100 min-h-screen selection:bg-indigo-500/30 selection:text-indigo-200;
-    scroll-behavior: smooth;
+  :root {
+    /* Linear/Cursor dark mode palette */
+    --background: #09090b; /* zinc-950 */
+    --foreground: #fafafa; /* zinc-50 */
+    --muted: #a1a1aa; /* zinc-400 */
+    --border: #27272a; /* zinc-800 */
+    --panel: #18181b; /* zinc-900 */
+    --panel-hover: #27272a; /* zinc-800 */
+    --accent: #3b82f6; /* blue-500 */
+    --accent-hover: #2563eb; /* blue-600 */
+  }
+  
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)] antialiased font-sans selection:bg-blue-500/30 selection:text-white;
   }
 
-  /* Sleek Minimalist Scrollbar */
+  /* Consistent scrollbar styling */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-800 rounded-full hover:bg-slate-700/80 transition-colors;
+    @apply bg-zinc-800 rounded-full border-2 border-transparent bg-clip-content;
   }
-
-  * {
-    @apply box-border;
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-700;
   }
 }
 
 @layer components {
-  /* Premium SaaS Background with living CSS mesh gradients, tech grid, and high-fidelity base image */
-  .premium-bg {
-    background-color: #020308;
-    background-image: 
-      /* Subtle Tech grid overlay */
-      linear-gradient(rgba(99, 102, 241, 0.012) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(99, 102, 241, 0.012) 1px, transparent 1px),
-      /* Slowly moving radial glow blobs */
-      radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.14) 0%, transparent 55%),
-      radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.11) 0%, transparent 55%),
-      radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
-      /* Fades to blend the tech background image */
-      radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-      linear-gradient(to bottom, rgba(2, 3, 8, 0.25) 0%, #020308 95%),
-      /* Static background image asset */
-      url('/hero_bg.png');
-    background-size: 50px 50px, 50px 50px, 200% 200%, 200% 200%, 200% 200%, 100% 100%, 100% 100%, cover;
-    background-position: center center, center center, 0% 0%, 0% 0%, 0% 0%, center top, center center, center center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    animation: mesh-shift 25s ease-in-out infinite alternate;
+  /* Panels */
+  .surface-panel {
+    @apply bg-[var(--panel)] border border-[var(--border)] rounded-md shadow-sm;
   }
-
-  /* Crisp high-fidelity glass primary button */
-  .btn-primary {
-    @apply px-5 py-2.5 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl font-bold text-sm transition-all duration-300 border border-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.01] active:scale-[0.98] tracking-wide;
-  }
-
-  .btn-secondary {
-    @apply px-5 py-2.5 bg-[#080b12]/60 hover:bg-[#0c111c]/80 border border-slate-800/80 hover:border-slate-700 text-slate-300 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300 active:scale-[0.98] hover:scale-[1.01] hover:shadow-md;
-  }
-
-  /* Premium Glassmorphic Obsidian card */
-  .card {
-    @apply bg-[#080b12]/50 backdrop-blur-xl border border-slate-800/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden;
-  }
-
-  .card-hover {
-    @apply card hover:border-indigo-500/25 hover:bg-[#0c111c]/70 hover:shadow-indigo-950/20 hover:shadow-2xl transition-all duration-300;
-  }
-
-  /* Glowing Border Card (Linear/Vercel style border-beam animation) */
-  .glowing-card {
-    @apply relative bg-[#080b12]/50 backdrop-blur-xl border-0 rounded-2xl p-6 shadow-2xl z-[1] transition-all duration-300;
-  }
-
-  .glowing-card::before {
-    content: '';
-    @apply absolute -top-[1px] -left-[1px] -right-[1px] -bottom-[1px] rounded-[17px] pointer-events-none z-[-1] opacity-20 transition-opacity duration-300;
-    background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1, #3b82f6);
-    background-size: 300% 300%;
-    animation: border-beam 8s ease infinite;
-  }
-
-  .glowing-card:hover::before {
-    @apply opacity-50;
-  }
-
+  
+  /* Inputs */
   .input-field {
-    @apply w-full bg-[#04060b]/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all duration-300;
+    @apply w-full bg-[var(--background)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent transition-all duration-150;
   }
 
-  /* Flat layout status badges */
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center bg-[var(--foreground)] text-[var(--background)] hover:bg-zinc-200 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--background)] focus:ring-[var(--foreground)] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center bg-[var(--panel)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--panel-hover)] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--background)] focus:ring-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-ghost {
+    @apply inline-flex items-center justify-center bg-transparent text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--panel-hover)] px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--background)] focus:ring-[var(--border)];
+  }
+
+  /* Status Badges */
+  .badge {
+    @apply inline-flex items-center rounded border px-2 py-0.5 text-xs font-medium transition-colors;
+  }
+  
+  .badge-default {
+    @apply bg-zinc-900 border-zinc-800 text-zinc-100;
+  }
   .badge-success {
-    @apply bg-emerald-950/20 text-emerald-400 border border-emerald-500/15 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider;
+    @apply bg-emerald-950/50 border-emerald-900/50 text-emerald-400;
   }
-
   .badge-error {
-    @apply bg-rose-950/20 text-rose-400 border border-rose-500/15 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider;
+    @apply bg-red-950/50 border-red-900/50 text-red-400;
   }
-
   .badge-info {
-    @apply bg-indigo-950/20 text-indigo-400 border border-indigo-500/15 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider;
+    @apply bg-blue-950/50 border-blue-900/50 text-blue-400;
+  }
+  .badge-warning {
+    @apply bg-amber-950/50 border-amber-900/50 text-amber-400;
+  }
+
+  /* Utility wrappers */
+  .page-container {
+    @apply flex-1 p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto space-y-8;
+  }
+  
+  .section-heading {
+    @apply text-lg font-semibold tracking-tight text-[var(--foreground)];
+  }
+  
+  .section-subheading {
+    @apply text-sm text-[var(--muted)];
   }
 }
 
-/* Animations & Keyframes */
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0px); }
-}
-
-@keyframes pulse-glow {
-  0% { opacity: 0.25; transform: translate(0px, 0px) scale(1); }
-  33% { opacity: 0.45; transform: translate(30px, -40px) scale(1.05); }
-  66% { opacity: 0.35; transform: translate(-20px, 20px) scale(0.95); }
-  100% { opacity: 0.25; transform: translate(0px, 0px) scale(1); }
-}
-
-@keyframes border-beam {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes mesh-shift {
-  0% {
-    background-position: 0px 0px, 0px 0px, 0% 0%, 100% 100%, 50% 50%, 0% 0%;
-  }
-  50% {
-    background-position: 0px 0px, 0px 0px, 50% 100%, 0% 0%, 100% 50%, 0% 0%;
-  }
-  100% {
-    background-position: 0px 0px, 0px 0px, 100% 50%, 50% 0%, 0% 100%, 0% 0%;
-  }
-}
-
-.animate-float {
-  animation: float 5s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 10s ease-in-out infinite;
+/* Remove legacy classes that will be cleaned up by scripts */
+.glass-panel, .glass-panel-hover, .premium-bg, .animate-blob, .animation-delay-2000, .animation-delay-4000 {
+  @apply hidden; 
 }
